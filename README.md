@@ -11,7 +11,7 @@ To run the project work:
     
     3. venv\scripts\acrivate
     
-  Run python manage.py runserver and go http://127.0.0.1:8000/
+    Run python manage.py runserver and go http://127.0.0.1:8000/
   
 As of its current state, the project has an adminpage with following functionalities:
   1. Login for the admin
