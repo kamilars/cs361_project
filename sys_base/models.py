@@ -26,6 +26,14 @@ class AdminStaff(models.Model):
     username = models.CharField(max_length = 30)
     password = models.CharField(max_length = 30)
 
+class AppointmentRequest(models.Model):
+    requestId = models.AutoField(primary_key=True)
+    patient_name = models.CharField(max_length = 50)
+    patient_surname = models.CharField(max_length = 50)
+    contact = models.CharField(max_length = 50)
+    doctor = models.CharField(max_length = 100)
+    time_slot = models.CharField(max_length = 50)
+
 class Patient(models.Model):
     date_of_birth = models.DateField()
     iin = models.CharField(primary_key=True, max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
