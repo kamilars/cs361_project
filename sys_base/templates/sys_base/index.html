@@ -1,0 +1,18 @@
+{% extends "sys_base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>DenSys.Me</title>
+{% endblock title %}
+
+{% block content %}
+
+<h1>Hello. this is the homepage of our web application. I have some unresolved problems ((c) Kamila)</h1>
+<p>1. I created Admin model in models.py, run the 'python manage.py makemigrations' and 'python manage.py migrate' commands, but the Admin (for admin staff of the system, not django admin) table didn't appear in the Django Admin page. Just patients and doctors</p>
+<p>2. For some reasons, all of the fields in the patient registration page are required</p>
+<p>3. Because of problem 1, I couldn't implement login as admin staff and just put everything in the navbar</p>
+
+<p>It's just milestone 2 ughhhhh</p>
+
+{% endblock content %}
+

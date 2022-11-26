@@ -1,0 +1,29 @@
+{% extends "sys_base/base.html" %} {% load crispy_forms_tags %} {% block content %}
+<div class="container p-t-5">
+  <div class="col-md-10 offset-md-1 mt-5">
+    <div class="jumbotron" style="margin-top:100px">
+      <h1 class="display-8">Login</h1>
+      <p class="lead">Please enter your credentials</p>
+      <hr class="my-4" />
+
+      <form action="" method="post" autocomplete="off">
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col-md-12">{{form.username|as_crispy_field}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">{{form.password|as_crispy_field}}</div>
+        </div>
+        <div class="row d.flex">
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-info btn-block btn-lg">
+              Login
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
