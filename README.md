@@ -9,7 +9,7 @@ To run the project work:
     
   Activate the vitual environment:
     
-    3. venv\scripts\acrivate
+    3. venv\scripts\activate
     
     Run python manage.py runserver and go http://127.0.0.1:8000/
   
