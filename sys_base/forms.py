@@ -1,6 +1,6 @@
 from django import forms
 from .models import Doctor
-from .models import Admin
+from .models import AdminStaff
 from .models import Patient
 from . import models
 
@@ -29,7 +29,7 @@ class PatientForm(forms.ModelForm):
 
 class LoginAdminForm(forms.ModelForm):
     class Meta:
-        model = Admin
+        model = AdminStaff
         fields={'username', 'password'}
 
 

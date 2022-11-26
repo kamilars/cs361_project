@@ -2,7 +2,7 @@ from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm
-from .models import Doctor, Admin, Patient
+from .models import Doctor, AdminStaff, Patient
 # Create your views here.
 
 def errormsg(request):
@@ -21,7 +21,7 @@ def admin_login(request):
     if request.method == 'POST':
         username=request.POST['username']
         password=request.POST['password']
-        admin=Admin.objects.filter(username=username, password=password).count()
+        admin=AdminStaff.objects.filter(username=username, password=password).count()
         if admin>0:
             msg='Successful'
         else:
