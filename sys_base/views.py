@@ -1,7 +1,7 @@
 from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import DoctorForm, LoginAdminForm, PatientForm
+from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentRequest
 from .models import Doctor, AdminStaff, Patient
 # Create your views here.
 
@@ -55,7 +55,10 @@ def patient_register(request, iin=None):
         if form.is_valid():
             form.save()
         return redirect('/patient_list')
-   
+
+def request_appointment(request):
+    form = AppointmentRequest()
+    return render(request, "sys_base/request_app_form.html", {'form':form})
 
 def doctor_delete(request, iin):
     doctor = Doctor.objects.get(pk=iin)

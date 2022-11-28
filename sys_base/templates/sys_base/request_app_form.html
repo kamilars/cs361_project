@@ -1,0 +1,34 @@
+{% extends "sys_base/base.html" %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="container p-t-5">
+    <div class="col-md-10 offset-md-1 mt-5">
+      <div class="jumbotron" style="margin-top:100px">
+        <h1 class="display-8">Request an appointment</h1>
+        <p class="lead">Please fill in the form</p>
+        <hr class="my-4" />
+  
+        <form action="" method="post" autocomplete="off">
+          {% csrf_token %}
+          {{form.patient_name|as_crispy_field}}
+          {{form.patient_surname|as_crispy_field}}
+          {{form.contact|as_crispy_field}}
+          {{form.doctor|as_crispy_field}}
+          {{form.time_slot|as_crispy_field}}
+          <div class="row d.flex">
+              <div class="col-md-12">
+                  <button type="submit" class="btn btn-info btn-block btn-lg">Submit</button>
+              </div>
+          </div>
+          <div class="row d.flex m-t-5">
+              <div class="col-md-12">
+                  <a href="{% url 'index' %}" class="btn text-info btn-block btn-lg"> <!--url 'patient_list'-->
+                      Back to the home page
+                  </a>
+              </div>
+          </div>
+      </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
