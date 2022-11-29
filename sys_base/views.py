@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentRequest
 from .models import Doctor, AdminStaff, Patient
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 # Create your views here.
 
 def errormsg(request):
@@ -13,9 +16,38 @@ def index(request):
     #context = {'doctors': doctors_list}
     return render(request, 'sys_base/index.html')
 
-def login(request):
+
+def loginpage(request):
+    context = {}
+    
+    if request.method == 'POST':
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(username)
+        except:
+            msg = 'User does not exist'
+
+        user = authenticate(request, username = username, password = password)
+
+        if user is not None:
+            context['user'] = username
+            login(request, user)
+            return redirect('index')
+        else:
+            msg = 'User does not exist or password is incorrect'
+
     form = LoginAdminForm()
-    return render(request, "sys_base/login.html", {'form':form})
+    context['form'] = form
+    context.update
+    return render(request, "sys_base/login.html", context)
+
+
+@login_required(login_url='login')
+def logoutuser(request):
+    logout(request)
+    return redirect('index')
+
 
 def admin_login(request):
     if request.method == 'POST':
@@ -29,15 +61,18 @@ def admin_login(request):
     form=LoginAdminForm
     return render(request, 'sys_base/admin.html')
 
+@login_required(login_url='login')
 def patient_list(request):
     context = {'patient_list':Patient.objects.all()}
     return render(request, "sys_base/patient_list.html", context)
 
+@login_required(login_url='login')
 def patient_delete(request, iin):
     patient = Patient.objects.get(pk=iin)
     patient.delete()
     return redirect('/patient_list')
 
+@login_required(login_url='login')
 def patient_register(request, iin=None):
     if request.method == "GET":
         if iin==None:
@@ -56,11 +91,32 @@ def patient_register(request, iin=None):
             form.save()
         return redirect('/patient_list')
 
+@login_required(login_url='login')
 def request_appointment(request):
     form = AppointmentRequest()
     return render(request, "sys_base/request_app_form.html", {'form':form})
 
+@login_required(login_url='login')
 def doctor_delete(request, iin):
     doctor = Doctor.objects.get(pk=iin)
     doctor.delete()
     return redirect('/doctors_list')
+
+
+def searchdoctors(request):
+    context = {}
+
+    if 'searchbarsubmit' in request.POST:
+        q = request.POST.get('searchbar')
+        try:
+            search = Doctor.objects.filter(name = q)
+            paginator = Paginator(search, 3)
+
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+
+            context = {'page_obj' : page_obj}
+        except:
+            msg = 'error :('
+
+    return render(request, 'sys_base/searchdoctors.html', context)

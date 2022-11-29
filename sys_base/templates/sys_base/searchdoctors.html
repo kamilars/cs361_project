@@ -1,0 +1,58 @@
+{% extends "sys_base/base.html" %} {% load crispy_forms_tags %} 
+
+{% block content %}
+<div class="pt-5">
+    <form name = 'searchbarform' action="{% url 'searchdoctors' %}" method="POST" class="form-group" >
+        {% csrf_token %}
+        <div class="container input-group mb-3">
+            <div class="input-group w-100">
+                <input type="search" placeholder="Search..." name = "searchbar" class="form-control form-control-lg">
+                <input class = 'btn btn-light font-weight-bold' name = 'searchbarsubmit' type="submit" value="Search">
+            </div>
+        </div>
+    </form>
+    {% if page_obj %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <td>Photo</td>
+                <td>Name</td>
+                <td>Surname</td>
+                <td>Phone Number</td>
+                <td>Category</td>
+                <td>Price of appointment</td>
+                <td>Degree</td>
+                <td>Rating</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in page_obj %}
+            <tr>
+                {% if obj.photo_doctor %}
+                <td>
+                    {% load static %}
+                    <img src="{{obj.email.avatar.url }}" width="50" height="60" alt="defaultimage">
+                </td>
+                {% else %}
+                <td>
+                    {% load static %}
+                    <img src="{% static 'imgs/default.jpg' %}" width="50" height="60" alt="defaultimage">
+                </td>
+                {% endif %}
+                <td>{{ obj.name }}</td>
+                <td>{{ obj.surname }}</td>
+                <td>{{ obj.contact_number }}</td>
+                <td>{{ obj.category_doctor }}</td>
+                <td>{{ obj.price_of_appointment }}</td>
+                <td>{{ obj.degree }}</td>
+                <td>{{ obj.rating }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+
+
+
+{% endblock content %}
