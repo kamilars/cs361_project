@@ -86,15 +86,46 @@ def patient_register(request, iin=None):
             form = PatientForm(request.POST)
         else:
             patient = Patient.objects.get(pk=iin)
-            form = DoctorForm(request.POST, instance=patient)
+            form = PatientForm(request.POST, instance=patient)
         if form.is_valid():
             form.save()
         return redirect('/patient_list')
 
+#@login_required(login_url='login')
+def request_appointment(request, id=None):
+    if request.method == "GET":
+        if id==None:
+            form = AppointmentRequest()
+        else:
+            doctor = Doctor.objects.get(pk=id)
+            selected_doctor=doctor.name+" "+doctor.surname
+            form = AppointmentRequest(initial={'doctor': selected_doctor})
+        return render(request, "sys_base/request_app_form.html", {'form':form})
+    elif request.method == "POST":
+        form = AppointmentRequest(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('/')
+
+
 @login_required(login_url='login')
-def request_appointment(request):
-    form = AppointmentRequest()
-    return render(request, "sys_base/request_app_form.html", {'form':form})
+def doctor_register(request, iin=None):
+    if request.method == "GET":
+        if iin==None:
+            form = DoctorForm()
+        else:
+            doctor = Doctor.objects.get(pk=iin)
+            form = DoctorForm(instance=doctor)
+        return render(request, "sys_base/doctor_form.html", {'form':form})
+    elif request.method == "POST":
+        if iin==None:
+            form = DoctorForm(request.POST)
+        else:
+            doctor = Doctor.objects.get(pk=iin)
+            form = DoctorForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('/index')
 
 @login_required(login_url='login')
 def doctor_delete(request, iin):

@@ -33,13 +33,14 @@ class AppointmentRequest(models.Model):
     contact = models.CharField(max_length = 50)
     doctor = models.CharField(max_length = 100)
     time_slot = models.CharField(max_length = 50)
+    status = models.CharField(max_length=20, default="not considered")
 
 class Patient(models.Model):
     date_of_birth = models.DateField()
     iin = models.CharField(primary_key=True, max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
     name = models.CharField(max_length = 30)
     surname = models.CharField(max_length = 30)
-    middlename = models.CharField(max_length = 30, default='')
+    middlename = models.CharField(max_length = 30, blank=True, default='')
     blood_group = models.CharField(max_length = 3) #, validators = [blood_type_validator])
     contact_number = models.CharField(
         max_length = 11, 
@@ -64,7 +65,7 @@ class Doctor(models.Model):
     iin = models.CharField(max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
     name = models.CharField(max_length = 30)
     surname = models.CharField(max_length = 30)
-    middlename = models.CharField(max_length = 30)
+    middlename = models.CharField(max_length = 30, blank=True, default='')
     contact_number = models.CharField(
         max_length = 11, 
         validators = [

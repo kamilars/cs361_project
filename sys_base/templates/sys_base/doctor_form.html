@@ -1,0 +1,49 @@
+{% extends "sys_base/base.html" %} {% load crispy_forms_tags %} {% block content %}
+<div class="container p-t-5">
+  <div class="col-md-10 offset-md-1 mt-5">
+    <div class="jumbotron" style="margin-top:100px">
+      <h1 class="display-8">Doctor Registration</h1>
+      
+      <hr class="my-4" />
+
+      <form action="" method="post" autocomplete="off">
+        {% csrf_token %}
+        <p class="lead">Personal information</p>
+        {{form.iin|as_crispy_field}}
+        {{form.name|as_crispy_field}}
+        {{form.surname|as_crispy_field}}
+        {{form.middlename|as_crispy_field}}
+        {{form.date_of_birth|as_crispy_field}}
+        {{form.contact_number|as_crispy_field}}
+        {{form.address_doctor|as_crispy_field}}
+        {{form.photo_doctor|as_crispy_field}}
+        <hr class="my-4" />
+        <p class="lead">Professional details</p>
+        {{form.department_id|as_crispy_field}}
+        {{form.specialization_details_id|as_crispy_field}}
+        {{form.experience|as_crispy_field}}
+        {{form.category_doctor|as_crispy_field}}
+        {{form.degree|as_crispy_field}}
+        {{form.rating|as_crispy_field}}
+        {{form.schedule_details|as_crispy_field}}
+        {{form.price_of_appointment|as_crispy_field}}
+        
+        <div class="row d.flex">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-info btn-block btn-lg">Submit</button>
+            </div>
+        </div>
+        <div class="row d.flex m-t-5">
+            <div class="col-md-12">
+                <a href="{% url 'index' %}" class="btn text-info btn-block btn-lg"> <!--url 'patient_list'-->
+                    Back to main page
+                </a>
+            </div>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}

@@ -23,6 +23,7 @@
                 <td>Price of appointment</td>
                 <td>Degree</td>
                 <td>Rating</td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +47,9 @@
                 <td>{{ obj.price_of_appointment }}</td>
                 <td>{{ obj.degree }}</td>
                 <td>{{ obj.rating }}</td>
+                <td><a href="{% url 'request_appointment' obj.id %}" class="btn btn-info btn-block"> 
+                    Select
+                </a></td>
             </tr>
             {% endfor %}
         </tbody>
