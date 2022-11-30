@@ -2,7 +2,7 @@ from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentRequest
-from .models import Doctor, AdminStaff, Patient
+from .models import Doctor, AdminStaff, Patient, Specialize
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -140,6 +140,7 @@ def searchdoctors(request):
 
     doctors = Doctor.objects.all()
     context["doctors"] = doctors
+    context["specializations"] = Specialize.objects.all()
 
     if 'searchbarsubmit' in request.POST:
         q = request.POST.get('searchbar')

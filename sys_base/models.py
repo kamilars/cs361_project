@@ -92,3 +92,30 @@ class Doctor(models.Model):
         return "Dr. %s %s" % (self.surname, self.name)
 
 
+class Specialize(models.Model):
+
+    SPECIALIZATIONS_LIST = (
+        (0, 'Allergists'),
+        (1, 'Cardiologists'),
+        (2, 'Dermatologists'),
+        (3, 'Endocrinologists'),
+        (4, 'Physicians'),
+        (5, 'Gastroenterologists'),
+    )
+
+    doctor_id = models.OneToOneField(
+        'Doctor', 
+        db_column='iin',
+        on_delete=models.CASCADE,
+        primary_key=True)
+    spec = models.IntegerField(choices=SPECIALIZATIONS_LIST)
+
+    def __str__(self):
+        return ">>>|:-:|<<<"
+
+
+
+
+    
+
+
