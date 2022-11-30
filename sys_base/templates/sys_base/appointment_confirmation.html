@@ -1,0 +1,17 @@
+{% extends "sys_base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>DenSys.Me</title>
+{% endblock title %}
+
+{% block content %}
+<h1>You have successfully requested your appointment! Please save the information below!</h1>
+<p>Appointment id: {{appointment.id}}</p>
+<p>Patient name: {{appointment.patient_name}}</p>
+<p>Patient surname: {{appointment.patient_surname}}</p>
+<p>Your contact details: {{appointment.contact}}</p>
+<p>Selected Doctor: {{appointment.doctor}}</p>
+<p>Time: {{appointment.time_slot}}</p>
+
+{% endblock content %}

@@ -1,0 +1,43 @@
+{% extends "sys_base/base.html" %} 
+{% block content %}
+
+<div class="container p-t-5">
+    <div class="col-md-10 offset-md-1 mt-5">
+      <div class="jumbotron" style="margin-top:100px">
+
+<h1 class="display-8">Patients registered</h1>
+<hr class="my-4">
+<table class="table table-borderless">
+    <thead class="border-bottom font-weight-bold">
+        <tr>
+            <td>Doctor</td>
+            <td>Patient name</td>
+            <td>Patient surname</td>
+            <td>Contact</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for app in appointments %}
+            <tr>
+                <td>{{app.doctor}}</td>
+                <td>{{app.patient_name}}</td>
+                <td>{{app.patient_surname}}</td>
+                <td>{{app.patient_contact}}</td>
+                <td>{{app.date}}</td>
+                <td>{{app.timeslot}}</td>
+                <td><a href="" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
+                    Confirm
+                </a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+{% endblock content %}
