@@ -6,12 +6,20 @@
 {% endblock title %}
 
 {% block content %}
-<h1>You have successfully requested your appointment! Please save the information below!</h1>
-<p>Appointment id: {{appointment.id}}</p>
-<p>Patient name: {{appointment.patient_name}}</p>
-<p>Patient surname: {{appointment.patient_surname}}</p>
-<p>Your contact details: {{appointment.contact}}</p>
-<p>Selected Doctor: {{appointment.doctor}}</p>
-<p>Time: {{appointment.time_slot}}</p>
 
+
+<div class="container p-t-5">
+    <div class="col-md-10 offset-md-1 mt-5">
+        <div class="jumbotron" style="margin-top:100px">
+            <h2 class="display-8">You have successfully requested your appointment!</h2>
+        </div>
+    </div>
+    <div class="row d.flex m-t-5">
+        <div class="col-md-12">
+            <a href="{% url 'index' %}" class="btn text-info btn-block btn-lg"> <!--url 'patient_list'-->
+                Back to the home page
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock content %}

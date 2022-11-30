@@ -7,17 +7,10 @@
 
 {% block content %}
 
-<h1>Hello. this is the homepage of our web application. I have some unresolved problems ((c) Kamila)</h1>
-<p>1. I created Admin model in models.py, run the 'python manage.py makemigrations' and 'python manage.py migrate' commands, but the Admin (for admin staff of the system, not django admin) table didn't appear in the Django Admin page. Just patients and doctors</p>
-<p>2. For some reasons, all of the fields in the patient registration page are required</p>
-<p>3. Because of problem 1, I couldn't implement login as admin staff and just put everything in the navbar</p>
-
-<p>It's just milestone 2 ughhhhh</p>
-
-<h1> Do you want to make an appointment? Find your doctor :)</h1>
+<h2 style="margin-top: 100px"> Do you want to make an appointment? Find your doctor :)</h2>
 
 <p>
-    <a href="{% url 'searchdoctors' %}">Search...</a>
+    <a href="{% url 'searchdoctors' %}" class="btn btn-info btn-block">Search</a>
 </p>
 
 {% endblock content %}

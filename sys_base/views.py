@@ -104,16 +104,16 @@ def appointment(request, id):
         form = AppointmentForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect('/')
+        return redirect('/appointment_confirmation')
 
 def requested_appointments(request):
     context = {'appointments':Appointment.objects.all()}
     return render(request, "sys_base/requested_appointments.html", context)
 
-def appointment_confirmation(request, id):
-    context={}
-    context['appointment'] = Appointment.objects.get(pk=id)
-    return render(request, "sys_base/appointment_confirmation.html", context)
+def appointment_confirmation(request, id=None):
+    #context={}
+    #context['appointment'] = Appointment.objects.get(pk=id)
+    return render(request, "sys_base/appointment_confirmation.html") #, context)
 
 @login_required(login_url='login')
 def doctor_register(request, iin=None):
