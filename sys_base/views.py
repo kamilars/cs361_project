@@ -1,8 +1,13 @@
 from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+<<<<<<< HEAD
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentRequest
 from .models import Doctor, AdminStaff, Patient, Specialize
+=======
+from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm
+from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment
+>>>>>>> b38921cb681ed0c6702966637d4010be8633b0ef
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -92,22 +97,29 @@ def patient_register(request, iin=None):
             form.save()
         return redirect('/patient_list')
 
-#@login_required(login_url='login')
-def request_appointment(request, id=None):
+def appointment(request, id):
+    context={}
+    doctor = Doctor.objects.get(pk=id)
+    selected_doctor=doctor.name+" "+doctor.surname
+    context['doctor_name'] = selected_doctor
+    context['form'] = AppointmentForm(initial={'doctor': selected_doctor})
     if request.method == "GET":
-        if id==None:
-            form = AppointmentRequest()
-        else:
-            doctor = Doctor.objects.get(pk=id)
-            selected_doctor=doctor.name+" "+doctor.surname
-            form = AppointmentRequest(initial={'doctor': selected_doctor})
-        return render(request, "sys_base/request_app_form.html", {'form':form})
+        return render(request, "sys_base/request_app_form.html", context)
     elif request.method == "POST":
-        form = AppointmentRequest(request.POST)
+        form = AppointmentForm(request.POST)
         if form.is_valid():
             form.save()
         return redirect('/')
 
+def requested_appointments(request):
+    context = {'appointments':Appointment.objects.all()}
+    return render(request, "sys_base/requested_appointments.html", context)
+
+
+def appointment_confirmation(request, id):
+    context={}
+    context['appointment'] = AppointmentRequest.objects.get(pk=id)
+    return render(request, "sys_base/appointment_confirmation.html", context)
 
 @login_required(login_url='login')
 def doctor_register(request, iin=None):

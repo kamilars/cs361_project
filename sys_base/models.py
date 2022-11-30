@@ -1,5 +1,6 @@
 import code
 from email.policy import default
+from datetime import datetime, date, timedelta
 from msilib.schema import Class
 from unittest.util import _MAX_LENGTH
 from django.db import models
@@ -34,6 +35,41 @@ class AppointmentRequest(models.Model):
     doctor = models.CharField(max_length = 100)
     time_slot = models.CharField(max_length = 50)
     status = models.CharField(max_length=20, default="not considered")
+
+class Appointment(models.Model):
+
+    class Meta:
+        unique_together = ('doctor', 'date', 'timeslot')
+
+    TIMESLOT_LIST = (
+        (0, '09:00 – 09:30'),
+        (1, '10:00 – 10:30'),
+        (2, '11:00 – 11:30'),
+        (3, '12:00 – 12:30'),
+        (4, '13:00 – 13:30'),
+        (5, '14:00 – 14:30'),
+        (6, '15:00 – 15:30'),
+        (7, '16:00 – 16:30'),
+        (8, '17:00 – 17:30'),
+    )
+
+    DATE_LIST=[]
+    for i in range(0,7):
+        day = date.today() + timedelta(days=i)
+        DATE_LIST.append((i, day))
+   
+
+    doctor = models.CharField(max_length=60)
+    date = models.IntegerField(choices=DATE_LIST)
+    timeslot = models.IntegerField(choices=TIMESLOT_LIST)
+    patient_name = models.CharField(max_length=60)
+    patient_surname = models.CharField(max_length=60)
+    patient_contact = models.CharField(max_length=60)
+
+    @property
+    def time(self):
+        return self.TIMESLOT_LIST[self.timeslot][1], self.DATE_LIST[self.date][1]
+
 
 class Patient(models.Model):
     date_of_birth = models.DateField()
@@ -87,10 +123,10 @@ class Doctor(models.Model):
     rating = models.DecimalField(decimal_places = 1, max_digits = 2 ,validators = [validators.MinValueValidator(0.0), validators.MaxValueValidator(10.0)])
     address_doctor = models.CharField(max_length = 30)
     #homepage_url = 
-    
     def __str__(self):
         return "Dr. %s %s" % (self.surname, self.name)
 
+<<<<<<< HEAD
 
 class Specialize(models.Model):
 
@@ -119,3 +155,5 @@ class Specialize(models.Model):
     
 
 
+=======
+>>>>>>> b38921cb681ed0c6702966637d4010be8633b0ef

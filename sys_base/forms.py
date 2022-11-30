@@ -3,6 +3,7 @@ from .models import Doctor
 from .models import AdminStaff
 from .models import Patient
 from .models import AppointmentRequest
+from .models import Appointment
 from . import models
 
 class DateInput(forms.DateInput):
@@ -44,3 +45,8 @@ class AppointmentRequest(forms.ModelForm):
     class Meta:
         model = AppointmentRequest
         fields = ('patient_name', 'patient_surname', 'contact', 'doctor', 'time_slot')
+        
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ("__all__")
