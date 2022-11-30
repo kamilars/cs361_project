@@ -1,5 +1,5 @@
 {% extends "sys_base/base.html" %} {% load crispy_forms_tags %} 
-
+{% load static %}
 {% block content %}
 <div class="pt-5">
     <form name = 'searchbarform' action="{% url 'searchdoctors' %}" method="POST" class="form-group" >
@@ -19,12 +19,12 @@
                 {% for obj in page_obj %}
                 <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
-                        {% if obj.photo_doctor %}
-                        {% load static %}
-                        <img class = "card-img-top" src="{{obj.email.avatar.url }}" width="50" height="60" alt="avatar">
+                        {% if obj.photo_doctor %}              
+                        <!-- <img class = "card-img-top" src="{{obj.email.avatar.url }}" width="50" height="60" alt="avatar"> -->
+                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}"  alt="defaultimage">
                         {% else %}
-                        {% load static %}
-                        <img src="{% static 'imgs/default.jpg' %}" width="50" height="60" alt="defaultimage">
+                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}" width="50" height="60" alt="defaultimage">
+                        
                         {% endif %}
                         <div class="card-body">
                             <p class="card-text">
@@ -48,52 +48,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-    <!-- <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <td>Photo</td>
-                <td>Name</td>
-                <td>Surname</td>
-                <td>Phone Number</td>
-                <td>Category</td>
-                <td>Price of appointment</td>
-                <td>Degree</td>
-                <td>Rating</td>
-                <td></td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for obj in page_obj %}
-            <tr>
-                {% if obj.photo_doctor %}
-                <td>
-                    {% load static %}
-                    <img src="{{obj.email.avatar.url }}" width="50" height="60" alt="defaultimage">
-                </td>
-                {% else %}
-                <td>
-                    {% load static %}
-                    <img src="{% static 'imgs/default.jpg' %}" width="50" height="60" alt="defaultimage">
-                </td>
-                {% endif %}
-                <td>{{ obj.name }}</td>
-                <td>{{ obj.surname }}</td>
-                <td>{{ obj.contact_number }}</td>
-                <td>{{ obj.category_doctor }}</td>
-                <td>{{ obj.price_of_appointment }}</td>
-                <td>{{ obj.degree }}</td>
-                <td>{{ obj.rating }}</td>
-                <td><a href="{% url 'request_appointment' obj.id %}" class="btn btn-info btn-block"> 
-                    Select
-                </a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table> -->
     {% endif %}
 </div>
 
