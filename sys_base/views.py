@@ -138,6 +138,9 @@ def doctor_delete(request, iin):
 def searchdoctors(request):
     context = {}
 
+    doctors = Doctor.objects.all()
+    context["doctors"] = doctors
+
     if 'searchbarsubmit' in request.POST:
         q = request.POST.get('searchbar')
         try:
@@ -147,8 +150,8 @@ def searchdoctors(request):
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
 
-            context = {'page_obj' : page_obj}
+            context["page_obj"] = page_obj
         except:
             msg = 'error :('
-
+        
     return render(request, 'sys_base/searchdoctors.html', context)

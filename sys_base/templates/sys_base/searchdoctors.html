@@ -1,12 +1,25 @@
 {% extends "sys_base/base.html" %} {% load crispy_forms_tags %} 
 {% load static %}
+
 {% block content %}
 <div class="pt-5">
-    <form name = 'searchbarform' action="{% url 'searchdoctors' %}" method="POST" class="form-group" >
+    <form name = 'searchbarform' action="{% url 'searchdoctors' %}" method="POST" class="form-group">
         {% csrf_token %}
         <div class="container input-group mb-3">
             <div class="input-group w-100">
-                <input type="search" placeholder="Search..." name = "searchbar" class="form-control form-control-lg">
+                <input type="search" id="tags" placeholder="Search..." name = "searchbar" class="form-control form-control-lg">
+                <script>
+                    $( function() {
+                      var availableTags = [
+                        {% for doctor in doctors %}
+                            "{{ doctor.surname }}",
+                        {% endfor %}
+                      ];
+                      $( "#tags" ).autocomplete({
+                        source: availableTags
+                      });
+                    } );
+                </script>
                 <input class = 'btn btn-light font-weight-bold' name = 'searchbarsubmit' type="submit" value="Search">
             </div>
         </div>
@@ -51,6 +64,33 @@
     {% endif %}
 </div>
 
+{% if page_obj %}
+<nav aria-label="Page nav">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        
+        <li class="page-item disabled"><a class="page-link" href="#">{{page_obj.number}}</a></li>
+        <li class="page-item  disabled"><a class="page-link" href="#"> out of </a></li>
+        <li class="page-item  disabled"><a class="page-link" href="#">{{ page_obj.paginator.num_pages }}</a></li>
+       
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        </li>
+        {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
 
 
 {% endblock content %}
