@@ -110,7 +110,6 @@ def requested_appointments(request):
     context = {'appointments':Appointment.objects.all()}
     return render(request, "sys_base/requested_appointments.html", context)
 
-
 def appointment_confirmation(request, id):
     context={}
     context['appointment'] = AppointmentRequest.objects.get(pk=id)
