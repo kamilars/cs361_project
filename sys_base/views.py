@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentRequest
 from .models import Doctor, AdminStaff, Patient
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 # Create your views here.
@@ -140,7 +141,7 @@ def searchdoctors(request):
     if 'searchbarsubmit' in request.POST:
         q = request.POST.get('searchbar')
         try:
-            search = Doctor.objects.filter(name = q)
+            search = Doctor.objects.filter(name = q) | Doctor.objects.filter(surname = q)
             paginator = Paginator(search, 3)
 
             page_number = request.GET.get('page')
