@@ -23,6 +23,17 @@
                 <input class = 'btn btn-light font-weight-bold' name = 'searchbarsubmit' type="submit" value="Search">
             </div>
         </div>
+        <div class="container input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Choose Doctor Specialization: </label>
+            </div>
+            <select class="custom-select" id="inputGroupSelect01">
+              <option selected>Select from below</option>
+              {% for specialization in specializations %}
+              <option value="{{specialization.spec}}">{{specialization.spec.1}}</option>
+              {% endfor %}
+            </select>
+          </div>
     </form>
     {% if page_obj %}
 

@@ -42,26 +42,26 @@ class Appointment(models.Model):
         unique_together = ('doctor', 'date', 'timeslot')
 
     TIMESLOT_LIST = (
-        ('09:00 – 09:30', '09:00 – 09:30'),
-        ('10:00 – 10:30', '10:00 – 10:30'),
-        ('11:00 – 11:30', '11:00 – 11:30'),
-        ('12:00 – 12:30', '12:00 – 12:30'),
-        ('13:00 – 13:30', '13:00 – 13:30'),
-        ('14:00 – 14:30', '14:00 – 14:30'),
-        ('15:00 – 15:30', '15:00 – 15:30'),
-        ('16:00 – 16:30', '16:00 – 16:30'),
-        ('17:00 – 17:30', '17:00 – 17:30'),
+        (0, '09:00 – 09:30'),
+        (1, '10:00 – 10:30'),
+        (2, '11:00 – 11:30'),
+        (3, '12:00 – 12:30'),
+        (4, '13:00 – 13:30'),
+        (5, '14:00 – 14:30'),
+        (6, '15:00 – 15:30'),
+        (7, '16:00 – 16:30'),
+        (8, '17:00 – 17:30'),
     )
 
     DATE_LIST=[]
     for i in range(0,7):
         day = date.today() + timedelta(days=i)
-        DATE_LIST.append((day, day))
+        DATE_LIST.append((i, day))
    
 
     doctor = models.CharField(max_length=60)
-    date = models.CharField(choices=DATE_LIST, max_length=60)
-    timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)
+    date = models.IntegerField(choices=DATE_LIST)
+    timeslot = models.IntegerField(choices=TIMESLOT_LIST)
     patient_name = models.CharField(max_length=60)
     patient_surname = models.CharField(max_length=60)
     patient_contact = models.CharField(max_length=60)
@@ -125,4 +125,32 @@ class Doctor(models.Model):
     #homepage_url = 
     def __str__(self):
         return "Dr. %s %s" % (self.surname, self.name)
+
+
+class Specialize(models.Model):
+
+    SPECIALIZATIONS_LIST = (
+        (0, 'Allergists'),
+        (1, 'Cardiologists'),
+        (2, 'Dermatologists'),
+        (3, 'Endocrinologists'),
+        (4, 'Physicians'),
+        (5, 'Gastroenterologists'),
+    )
+
+    doctor_id = models.OneToOneField(
+        'Doctor', 
+        db_column='iin',
+        on_delete=models.CASCADE,
+        primary_key=True)
+    spec = models.IntegerField(choices=SPECIALIZATIONS_LIST)
+
+    def __str__(self):
+        return ">>>|:-:|<<<"
+
+
+
+
+    
+
 

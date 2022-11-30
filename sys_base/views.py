@@ -2,7 +2,7 @@ from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm
-from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment
+from .models import Doctor, AdminStaff, Patient, Specialize, Appointment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -112,7 +112,7 @@ def requested_appointments(request):
 
 def appointment_confirmation(request, id):
     context={}
-    context['appointment'] = AppointmentRequest.objects.get(pk=id)
+    context['appointment'] = Appointment.objects.get(pk=id)
     return render(request, "sys_base/appointment_confirmation.html", context)
 
 @login_required(login_url='login')
@@ -146,6 +146,7 @@ def searchdoctors(request):
 
     doctors = Doctor.objects.all()
     context["doctors"] = doctors
+    context["specializations"] = Specialize.objects.all()
 
     if 'searchbarsubmit' in request.POST:
         q = request.POST.get('searchbar')
