@@ -2,11 +2,7 @@ from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm
-<<<<<<< HEAD
-from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment, Specialize
-=======
-from .models import Doctor, AdminStaff, Patient, Specialize, Appointment
->>>>>>> 113e9c1e38475f4c88bbb7dd4ff2144ca471d906
+from .models import Doctor, AdminStaff, Patient, Specialize, Appointment, AppointmentRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -108,16 +104,17 @@ def appointment(request, id):
         form = AppointmentForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect('/appointment_confirmation')
+        return redirect('/')
 
 def requested_appointments(request):
     context = {'appointments':Appointment.objects.all()}
     return render(request, "sys_base/requested_appointments.html", context)
 
-def appointment_confirmation(request, id=None):
-    #context={}
-    #context['appointment'] = Appointment.objects.get(pk=id)
-    return render(request, "sys_base/appointment_confirmation.html") #, context)
+
+def appointment_confirmation(request, id):
+    context={}
+    context['appointment'] = AppointmentRequest.objects.get(pk=id)
+    return render(request, "sys_base/appointment_confirmation.html", context)
 
 @login_required(login_url='login')
 def doctor_register(request, iin=None):

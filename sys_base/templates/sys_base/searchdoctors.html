@@ -30,13 +30,8 @@
             </div>
             <select class="custom-select" id="inputGroupSelect01" name="select_spec">
               <option selected>Select from below</option>
-<<<<<<< HEAD
-              {% for specialization in specializations%}
-              <option value="{{specialization.spec}}">{{specialization}}</option>
-=======
               {% for specialization in specializations %}
-              <option value="{{specialization.spec}}">{{specialization.spec.1}}</option>
->>>>>>> 113e9c1e38475f4c88bbb7dd4ff2144ca471d906
+              <option value="{{specialization.spec}}">{{specialization}}</option>
               {% endfor %}
             </select>
           </div>

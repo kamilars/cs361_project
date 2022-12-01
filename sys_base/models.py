@@ -146,7 +146,7 @@ class Specialize(models.Model):
     spec = models.CharField(max_length=30, choices=SPECIALIZATIONS_LIST, default='Allergist')
 
     def __str__(self):
-        return"%s" % (self.spec)
+        return"Specialization: %s" % (self.spec)
 
 
 
