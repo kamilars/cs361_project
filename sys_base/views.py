@@ -1,13 +1,8 @@
 from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-<<<<<<< HEAD
-from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentRequest
-from .models import Doctor, AdminStaff, Patient, Specialize
-=======
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm
-from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment
->>>>>>> b38921cb681ed0c6702966637d4010be8633b0ef
+from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment, Specialize
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -152,14 +147,18 @@ def searchdoctors(request):
 
     doctors = Doctor.objects.all()
     context["doctors"] = doctors
-    context["specializations"] = Specialize.objects.all()
+    context["specializations"] = Specialize.objects.order_by().distinct()
 
     if 'searchbarsubmit' in request.POST:
-        q = request.POST.get('searchbar')
+        q = request.POST.get('searchbardoctors')
+        s = request.POST.get('select_spec')
         try:
-            search = Doctor.objects.filter(name = q) | Doctor.objects.filter(surname = q)
+            if s != "Select from below":
+                search = Doctor.objects.filter(specialize__spec__icontains=s)
+            else:
+                search = Doctor.objects.filter(name = q) | Doctor.objects.filter(surname = q)
+            
             paginator = Paginator(search, 3)
-
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
 

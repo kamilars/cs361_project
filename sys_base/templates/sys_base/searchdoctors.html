@@ -7,7 +7,7 @@
         {% csrf_token %}
         <div class="container input-group mb-3">
             <div class="input-group w-100">
-                <input type="search" id="tags" placeholder="Search..." name = "searchbar" class="form-control form-control-lg">
+                <input type="search" id="tags" placeholder="Search..." name = "searchbardoctors" class="form-control form-control-lg">
                 <script>
                     $( function() {
                       var availableTags = [
@@ -23,14 +23,15 @@
                 <input class = 'btn btn-light font-weight-bold' name = 'searchbarsubmit' type="submit" value="Search">
             </div>
         </div>
+        
         <div class="container input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Choose Doctor Specialization: </label>
             </div>
-            <select class="custom-select" id="inputGroupSelect01">
+            <select class="custom-select" id="inputGroupSelect01" name="select_spec">
               <option selected>Select from below</option>
               {% for specialization in specializations%}
-              <option value="{{specialization.spec}}">{{specialization.spec.1}}</option>
+              <option value="{{specialization.spec}}">{{specialization}}</option>
               {% endfor %}
             </select>
           </div>

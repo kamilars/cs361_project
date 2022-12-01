@@ -126,17 +126,16 @@ class Doctor(models.Model):
     def __str__(self):
         return "Dr. %s %s" % (self.surname, self.name)
 
-<<<<<<< HEAD
 
 class Specialize(models.Model):
 
     SPECIALIZATIONS_LIST = (
-        (0, 'Allergists'),
-        (1, 'Cardiologists'),
-        (2, 'Dermatologists'),
-        (3, 'Endocrinologists'),
-        (4, 'Physicians'),
-        (5, 'Gastroenterologists'),
+        ('Allergist', 'Allergist'),
+        ('Cardiologist', 'Cardiologist'),
+        ('Dermatologists', 'Dermatologist'),
+        ('Endocrinologist', 'Endocrinologist'),
+        ('Physician', 'Physician'),
+        ('Gastroenterologist', 'Gastroenterologist'),
     )
 
     doctor_id = models.OneToOneField(
@@ -144,10 +143,10 @@ class Specialize(models.Model):
         db_column='iin',
         on_delete=models.CASCADE,
         primary_key=True)
-    spec = models.IntegerField(choices=SPECIALIZATIONS_LIST)
+    spec = models.CharField(max_length=30, choices=SPECIALIZATIONS_LIST, default='Allergist')
 
     def __str__(self):
-        return ">>>|:-:|<<<"
+        return"%s" % (self.spec)
 
 
 
@@ -155,5 +154,3 @@ class Specialize(models.Model):
     
 
 
-=======
->>>>>>> b38921cb681ed0c6702966637d4010be8633b0ef
