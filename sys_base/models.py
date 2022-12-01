@@ -42,26 +42,26 @@ class Appointment(models.Model):
         unique_together = ('doctor', 'date', 'timeslot')
 
     TIMESLOT_LIST = (
-        (0, '09:00 – 09:30'),
-        (1, '10:00 – 10:30'),
-        (2, '11:00 – 11:30'),
-        (3, '12:00 – 12:30'),
-        (4, '13:00 – 13:30'),
-        (5, '14:00 – 14:30'),
-        (6, '15:00 – 15:30'),
-        (7, '16:00 – 16:30'),
-        (8, '17:00 – 17:30'),
+        ('09:00 – 09:30', '09:00 – 09:30'),
+        ('10:00 – 10:30', '10:00 – 10:30'),
+        ('11:00 – 11:30', '11:00 – 11:30'),
+        ('12:00 – 12:30', '12:00 – 12:30'),
+        ('13:00 – 13:30', '13:00 – 13:30'),
+        ('14:00 – 14:30', '14:00 – 14:30'),
+        ('15:00 – 15:30', '15:00 – 15:30'),
+        ('16:00 – 16:30', '16:00 – 16:30'),
+        ('17:00 – 17:30', '17:00 – 17:30'),
     )
 
     DATE_LIST=[]
     for i in range(0,7):
         day = date.today() + timedelta(days=i)
-        DATE_LIST.append((i, day))
+        DATE_LIST.append((str(day), str(day)))
    
 
     doctor = models.CharField(max_length=60)
-    date = models.IntegerField(choices=DATE_LIST)
-    timeslot = models.IntegerField(choices=TIMESLOT_LIST)
+    date = models.CharField(choices=DATE_LIST, max_length=60)
+    timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)
     patient_name = models.CharField(max_length=60)
     patient_surname = models.CharField(max_length=60)
     patient_contact = models.CharField(max_length=60)
@@ -112,8 +112,9 @@ class Doctor(models.Model):
             validators.MinLengthValidator(11)
         ]
     )
+
     department_id = models.PositiveIntegerField()
-    specialization_details_id = models.PositiveIntegerField()
+    specialization_details_id = models.CharField(max_length = 30)
     experience = models.PositiveIntegerField(validators = [validators.MaxValueValidator(100)])
     photo_doctor = models.ImageField(upload_to = 'imgs/', null=True, default = 'null')
     category_doctor = models.CharField(max_length = 10)

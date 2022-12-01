@@ -30,7 +30,7 @@
             </div>
             <select class="custom-select" id="inputGroupSelect01" name="select_spec">
               <option selected>Select from below</option>
-              {% for specialization in specializations %}
+              {% for specialization in specializations%}
               <option value="{{specialization.spec}}">{{specialization}}</option>
               {% endfor %}
             </select>
