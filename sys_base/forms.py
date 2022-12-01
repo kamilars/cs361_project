@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ModelForm, HiddenInput
 from .models import Doctor
 from .models import AdminStaff
 from .models import Patient
@@ -50,3 +51,6 @@ class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = ("__all__")
+    def __init__(self, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        self.fields['doctor'].widget = HiddenInput()

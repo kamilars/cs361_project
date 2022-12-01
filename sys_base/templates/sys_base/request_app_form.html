@@ -3,21 +3,21 @@
 <div class="container p-t-5">
     <div class="col-md-10 offset-md-1 mt-5">
       <div class="jumbotron" style="margin-top:100px">
-        <h1 class="display-8">Request an appointment</h1>
-        <p class="lead">Appointment to doctor:</p>
-        <p><strong>{{doctor_name}}</strong></p>
+        <h3 class="display-8">Appointment to doctor: {{doctor_name}}</h3>
+
         <hr class="my-4" />
   
-        <form action="" method="post" autocomplete="off">
+        <form id="app_req" action="" method="post" autocomplete="off">
           {% csrf_token %}
           {{form.patient_name|as_crispy_field}}
           {{form.patient_surname|as_crispy_field}}
           {{form.patient_contact|as_crispy_field}}
           {{form.date|as_crispy_field}}
+          {{form.doctor|as_crispy_field}}
           {{form.timeslot|as_crispy_field}}
           <div class="row d.flex">
               <div class="col-md-12">
-                  <button type="submit" class="btn btn-info btn-block btn-lg" data-toggle="modal" data-target="#requestConfirmModal">Submit</button>
+                  <button type="submit" class="btn btn-info btn-block btn-lg">Submit</button>
               </div>
           </div>
           <div class="row d.flex m-t-5">
@@ -31,6 +31,5 @@
       </div>
     </div>
   </div>
-
 
 {% endblock content %}
