@@ -112,8 +112,9 @@ class Doctor(models.Model):
             validators.MinLengthValidator(11)
         ]
     )
+
     department_id = models.PositiveIntegerField()
-    specialization_details_id = models.PositiveIntegerField()
+    specialization_details_id = models.CharField(max_length = 30)
     experience = models.PositiveIntegerField(validators = [validators.MaxValueValidator(100)])
     photo_doctor = models.ImageField(upload_to = 'imgs/', null=True, default = 'null')
     category_doctor = models.CharField(max_length = 10)

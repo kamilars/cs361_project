@@ -12,21 +12,32 @@ class DateInput(forms.DateInput):
 
 class DoctorForm(forms.ModelForm):
     class Meta:
+        
         model = Doctor
         fields = ('iin', 'name', 'middlename', 'surname', 'date_of_birth', 'contact_number', 'department_id', 'specialization_details_id', 'experience', 'photo_doctor', 'category_doctor', 'price_of_appointment', 'schedule_details', 'degree', 'rating', 'address_doctor')
         labels = {
             'iin':'IIN',
             'address_doctor':'Address',
-            'photo_doctor':'Photo'
+            'photo_doctor':'Photo',
+            'specialization_details_id':'Specialization'
         }
+
     def __init__(self, *args, **kwargs):
         super(DoctorForm, self).__init__(*args, **kwargs)
+        SPECIALIZATIONS_LIST = (
+            ('Allergist', 'Allergist'),
+            ('Cardiologist', 'Cardiologist'),
+            ('Dermatologists', 'Dermatologist'),
+            ('Endocrinologist', 'Endocrinologist'),
+            ('Physician', 'Physician'),
+            ('Gastroenterologist', 'Gastroenterologist'),
+        )
         years=[]
         for year in range(1940,2021):
             years.append(year)
         years.reverse()
         self.fields["date_of_birth"].widget = forms.SelectDateWidget(years=years, empty_label=("Year", "Month", "Day"))
-
+        self.fields["specialization_details_id"].widget = forms.Select(choices=SPECIALIZATIONS_LIST)
 
 class PatientForm(forms.ModelForm):
     class Meta:
