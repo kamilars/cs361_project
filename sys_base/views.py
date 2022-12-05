@@ -114,7 +114,7 @@ def requested_appointments(request):
         context['appointments'] = uid
     elif request.user.groups.all()[0].name == 'admin':
         context['usertype'] = 'admin'
-    elif request.user.groups.all()[0].name == 'admin':
+    elif request.user.groups.all()[0].name == 'Patient':
         context['usertype'] = 'Patient'
     context['appointments'] = Appointment.objects.all()
 
