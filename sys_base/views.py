@@ -2,7 +2,7 @@ from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm
-from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment, Specialize
+from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment, Specialize, Account
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -110,9 +110,14 @@ def requested_appointments(request):
     context = {}
     if request.user.groups.all()[0].name == 'Doctor':
         context['usertype'] = 'Doctor'
-
+        uid = Account.objects.filter(username = request.user.username)
+        context['appointments'] = uid
+    elif request.user.groups.all()[0].name == 'admin':
+        context['usertype'] = 'admin'
+    elif request.user.groups.all()[0].name == 'admin':
+        context['usertype'] = 'Patient'
     context['appointments'] = Appointment.objects.all()
-    
+
     return render(request, "sys_base/requested_appointments.html", context)
 
 def appointment_confirmation(request, id=None):
