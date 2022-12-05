@@ -7,6 +7,9 @@ from django.db import models
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
 
 #Validators
 def charfield_is_number_validator(value):
@@ -22,6 +25,9 @@ def blood_type_validator(input):
             params={'value':input},
         )
 # Create your models here.
+
+class Account(AbstractUser):
+    pass
 
 class AdminStaff(models.Model):
     username = models.CharField(max_length = 30)
@@ -72,6 +78,11 @@ class Appointment(models.Model):
 
 
 class Patient(models.Model):
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        default=None,
+    )
     date_of_birth = models.DateField()
     iin = models.CharField(primary_key=True, max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
     name = models.CharField(max_length = 30)
@@ -97,6 +108,11 @@ class Patient(models.Model):
         return "%s %s" % (self.surname, self.name)
 
 class Doctor(models.Model):
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        default=None,
+    )
     date_of_birth = models.DateField()
     iin = models.CharField(max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
     name = models.CharField(max_length = 30)

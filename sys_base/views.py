@@ -107,7 +107,12 @@ def appointment(request, id):
         return redirect('/appointment_confirmation')
 
 def requested_appointments(request):
-    context = {'appointments':Appointment.objects.all()}
+    context = {}
+    if request.user.groups.all()[0].name == 'Doctor':
+        context['usertype'] = 'Doctor'
+
+    context['appointments'] = Appointment.objects.all()
+    
     return render(request, "sys_base/requested_appointments.html", context)
 
 def appointment_confirmation(request, id=None):
