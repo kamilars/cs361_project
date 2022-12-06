@@ -108,7 +108,11 @@ def appointment(request, id):
 
 def requested_appointments(request):
     context = {}
-    if hasattr(request.user, 'doctor'):
+    if request.user.is_superuser:
+        context['usertype'] = 'admin'
+        appointments = Appointment.objects.all()
+        context['appointments'] = appointments
+    elif hasattr(request.user, 'doctor'):
         context['usertype'] = 'Doctor'
         appointments = Appointment.objects.filter(doctor__account__username = request.user.username)
         context['appointments'] = appointments
