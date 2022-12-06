@@ -108,15 +108,18 @@ def appointment(request, id):
 
 def requested_appointments(request):
     context = {}
-    if request.user.groups.all()[0].name == 'Doctor':
+    if hasattr(request.user, 'doctor'):
         context['usertype'] = 'Doctor'
-        uid = Account.objects.filter(username = request.user.username)
-        context['appointments'] = uid
-    elif request.user.groups.all()[0].name == 'admin':
-        context['usertype'] = 'admin'
-    elif request.user.groups.all()[0].name == 'Patient':
+        appointments = Appointment.objects.filter(doctor__account__username = request.user.username)
+        context['appointments'] = appointments
+    elif hasattr(request.user, 'patient'):
         context['usertype'] = 'Patient'
-    context['appointments'] = Appointment.objects.all()
+        appointments = Appointment.objects.filter(patient__account__username = request.user.username)
+        context['appointments'] = appointments
+    else:
+        context['usertype'] = 'Admin'
+        appointments = Appointment.objects.all()
+        context['appointments'] = appointments
 
     return render(request, "sys_base/requested_appointments.html", context)
 

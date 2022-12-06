@@ -37,7 +37,7 @@
              Logout
             </a>
             <hr>
-            {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'admin' %}
+            {% if request.user.doctor %}
             <a href="{% url 'patient_list' %}" class="dropdown-item" type="button">
               List of patients
             </a>
@@ -45,18 +45,25 @@
               Add a patient
             </a>
             {% endif %}
-            {% if request.user.groups.all.0.name == 'admin' %}
+            {% if request.user.is_superuser %}
             <a href="{% url 'doctor_register' %}" class="dropdown-item" type="button">
               Add a doctor
             </a>
-            {% endif %}
             <hr>
-            {% if request.user.groups.all.0.name == 'admin' %}
+            {% endif %}
+            
+            {% if request.user.is_superuser %}
             <a href="{% url 'requested_appointments' %}" class="dropdown-item" type="button">
               Appointments
             </a>
             {% endif %}
-            {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'admin' %}
+            {% if request.user.patient %}
+            <a href="{% url 'requested_appointments' %}" class="dropdown-item" type="button">
+              Appointments History
+            </a>
+            {% endif %}
+
+            {% if request.user.doctor  %}
             <a href="{% url 'requested_appointments' %}" class="dropdown-item" type="button">
               Appointments Schedule
             </a>

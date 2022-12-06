@@ -1,6 +1,7 @@
 {% extends "sys_base/base.html" %} 
 {% block content %}
 
+
 <div class="container p-t-5">
     <div class="col-md-12 offset-md-1 mt-5">
       <div class="jumbotron" style="margin-top:100px">
@@ -54,13 +55,13 @@
             <tbody>
                 {% for app in appointments %}
                     <tr>
-                        <td>{{app.doctor}}</td>
+                        <td>{{app.doctor_name}}</td>
                         <td>{{app.patient_name}}</td>
                         <td>{{app.patient_surname}}</td>
                         <td>{{app.patient_contact}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
-                        <td><a href="" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
+                        <td><a href="" class="btn text-secondary px=0">
                             Confirm
                         </a></td>
                     </tr>
