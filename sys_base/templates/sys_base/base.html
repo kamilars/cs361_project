@@ -37,7 +37,7 @@
               ඞ Logout ඞ
             </a>
             <hr>
-            {% if request.user.doctor %}
+            {% if request.user.doctor or request.user.is_superuser%}
             <a href="{% url 'patient_list' %}" class="dropdown-item" type="button">
               List of patients
             </a>

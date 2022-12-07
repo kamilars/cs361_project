@@ -43,6 +43,9 @@ class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
         fields = ('__all__')
+        labels = {
+            'iin':'IIN',
+        }
 
         def clean_iin(self, *args, **kwargs):
             iin = self.cleaned_data.get('iin')
@@ -51,10 +54,17 @@ class PatientForm(forms.ModelForm):
                 return iin
             else:
                 raise forms.ValidationError({'iin':'IIN length should be 12'})
-        def __init__(self, *args, **kwargs):
-            super(PatientForm, self).__init__(*args, **kwargs)
-            self.fields['middlename'].required = False
-            
+    
+    def __init__(self, *args, **kwargs):
+        super(PatientForm, self).__init__(*args, **kwargs)
+        self.fields['middlename'].required = False
+        years=[]
+        for year in range(1940,2021):
+            years.append(year)
+        years.reverse()
+        self.fields["date_of_birth"].widget = forms.TextInput( attrs={'type': 'date'} )
+        self.fields["email"].widget = forms.EmailInput()
+
 
 class LoginAdminForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())

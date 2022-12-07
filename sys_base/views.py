@@ -100,6 +100,8 @@ def patient_register(request, id=None):
             form = PatientForm(request.POST, instance=patient)
         if form.is_valid():
             form.save()
+        else:
+            return redirect('/patient_register')
         return redirect('/patient_list')
 
 def load_timeslots(request):
@@ -203,7 +205,9 @@ def doctor_register(request, iin=None):
             form = DoctorForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect('/index')
+        else:
+            return redirect('/doctor_register')
+        return redirect('/')
 
 @login_required(login_url='login')
 def doctor_delete(request, iin):

@@ -44,12 +44,10 @@
                 {% for obj in page_obj %}
                 <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
-                        {% if obj.photo_doctor %}              
-                        <!-- <img class = "card-img-top" src="{{obj.email.avatar.url }}" width="50" height="60" alt="avatar"> -->
-                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}"  alt="defaultimage">
+                        {% if not obj.photo_doctor.exists %}         
+                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}" alt="defaultimage">     
                         {% else %}
-                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}" width="50" height="60" alt="defaultimage">
-                        
+                        <img class = "card-img-top" src="{{ obj.photo_doctor.url }}" alt="notdefaultimage">
                         {% endif %}
                         <div class="card-body">
                             <p class="card-text">
