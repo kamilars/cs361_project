@@ -136,6 +136,7 @@ def appointment(request, id):
     elif request.method == "POST":
         form1 = PatientForm(request.POST)
         form2 = AppointmentForm(avail_dates, request.POST)
+        print(f"FORM1: {form1}")
         if form1.is_valid():
             iin = form1.cleaned_data['iin']
             name = form1.cleaned_data['name']

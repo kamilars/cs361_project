@@ -56,7 +56,7 @@ class Patient(models.Model):
     name = models.CharField(max_length = 30)
     surname = models.CharField(max_length = 30)
     middlename = models.CharField(max_length = 30, blank=True, default='')
-    blood_group = models.CharField(max_length = 3,
+    blood_group = models.CharField(max_length = 3, blank=True,
         choices=(
             ('A+', 'A+'),
             ('A-', 'A-'),
@@ -80,12 +80,12 @@ class Patient(models.Model):
     )
     email = models.CharField(blank=True, max_length = 30 ,validators = [validators.EmailValidator])
     address = models.CharField(blank=True, max_length = 30)
-    marital_status = models.CharField(max_length = 30, 
+    marital_status = models.CharField(max_length = 30, blank=True,
         choices=(
             ('Married', 'Married'),
             ('NotMarried', 'Not Married'),
         ))
-    registration_date = models.DateField(auto_now_add = True)
+    registration_date = models.DateField(auto_now_add = True, blank=True)
 
     def __str__(self):
         return "%s %s" % (self.surname, self.name)
@@ -173,10 +173,8 @@ class Appointment(models.Model):
    
    
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
     patient_iin = models.CharField(max_length=60, blank=True)
     date = models.CharField(choices=DATE_LIST, max_length=60)
-    #timeslot = models.CharField(max_length=60)
     timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)
     prescription = models.TextField(blank=True)
     status = models.CharField(blank=True, default='unscheduled', max_length=30)
