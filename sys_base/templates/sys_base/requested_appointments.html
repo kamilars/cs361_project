@@ -37,8 +37,8 @@
             </tbody>
         </table>
 
-        {% elif usertype == 'Doctor' %}
-        <h1 class="display-8">Requested Appointments</h1>
+        {% elif usertype == 'Doctor' or usertype == 'Patient' %}
+        <h1 class="display-8">Requested Appointments for the Patient - {{request.user.username}}</h1>
         <hr class="my-4">
         <table class="table table-borderless">
             <thead class="border-bottom font-weight-bold">
@@ -61,9 +61,6 @@
                         <td>{{app.patient_contact}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
-                        <td><a href="" class="btn text-secondary px=0">
-                            Confirm
-                        </a></td>
                     </tr>
                 {% endfor %}
             </tbody>
