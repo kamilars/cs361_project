@@ -12,16 +12,110 @@ def appointment(request, id):
     doctor = Doctor.objects.get(pk=id)
     selected_doctor=doctor.name+" "+doctor.surname
     context['doctor_name'] = selected_doctor
-    context['form2'] = AppointmentForm(initial={'doctor': doctor.pk})
+    avail_days_row = Appointment.objects.filter(doctor=doctor.pk, status='unscheduled')
+    avail_dates = []
+    for day in avail_days_row:
+        avail_dates.append((day.date, day.date))
+    print(f"AVAILABLE DAYS: {avail_dates}")
+    context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk})    
     context['form1'] = PatientForm()
 
     if request.method == "GET":
+        #avail_days = avail_days_row.date
         return render(request, "sys_base/request_app_form.html", context)
     elif request.method == "POST":
         form1 = PatientForm(request.POST)
-        if form1.is_valid():
-            form1.save()
         form2 = AppointmentForm(request.POST)
-        if form2.is_valid():
-            form2.save()
-        return redirect('/appointment_confirmation')
+        if form1.is_valid():
+            iin = form1.cleaned_data['iin']
+            name = form1.cleaned_data['name']
+            surname = form1.cleaned_data['surname']
+            email = form1.cleaned_data['email']
+            contact_number = form1.cleaned_data['contact_number']
+            Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
+            if form2.is_valid():
+                patient_iin = form1.cleaned_data['iin']
+                doc = form2.cleaned_data['doctor']
+                date = form2.cleaned_data['date']
+                timeslot = form2.cleaned_data['timeslot']
+                Appointment.objects.update(doctor=doc, patient_iin=patient_iin, date=date, timeslot=timeslot, status='requested')
+                request.session['name'] = name
+                request.session['surname'] = surname
+                request.session['date'] = date
+                request.session['timeslot'] = timeslot
+                request.session['doctor'] = selected_doctor
+                return redirect('/appointment_confirmation')
+        else:
+            return redirect('/')
+
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ("__all__")
+        labels = {'patient_iin':"IIN"}
+    def __init__(self, dates=None, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        print(f"ARGUMENTS: {type(args)} {args} KWARGS: {type(kwargs)} {kwargs} DATES: {dates}")
+        #AVAIL_DATES = kwargs.pop('avail_dates', None)
+        AVAIL_DATES = dates
+        '''AVAIL_DATES = [('2022-10-9', '2022-10-9'),
+        ('2022-10-17', '2022-10-17'),
+        ('2022-10-4', '2022-10-4'),
+        ]'''
+        self.fields['doctor'].widget = HiddenInput()
+        self.fields['patient_iin'].widget = HiddenInput()
+        self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
+        #if AVAIL_DATES:
+            #print(f"AVAIL DATES IN FORM: {AVAIL_DATES}")
+        #    self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
+
+
+def appointment(request, id):
+    context={}
+
+    doctor = Doctor.objects.get(pk=id)
+    selected_doctor=doctor.name+" "+doctor.surname
+    context['doctor_name'] = selected_doctor
+    avail_days_row = Appointment.objects.filter(doctor=doctor.pk, status='unscheduled').order_by('date')
+    avail_dates = []
+    avail_timeslots = {}
+    for day in avail_days_row:
+        #avail_dates.append((day.date, day.date))
+        avail_timeslots[day.date] = []
+        print(f"TYPE OF ENTRIES: {type(avail_timeslots[day.date])}")
+    for day in avail_days_row:
+        avail_timeslots[day.date].append(day.timeslot)
+    print(f"AVAILABLE TIMESLOTS: {avail_timeslots} TYPE OF TIMESLOTS: {type(avail_timeslots)}")
+    #print(f"AVAILABLE DAYS: {avail_dates}")
+    context['form2'] = AppointmentForm(avail_timeslots, initial={'doctor': doctor.pk}) 
+    #context['form2'] = AppointmentForm(initial={'doctor': doctor.pk})   
+    context['form1'] = PatientForm()
+
+    if request.method == "GET":
+        #avail_days = avail_days_row.date
+        return render(request, "sys_base/request_app_form.html", context)
+    elif request.method == "POST":
+        form1 = PatientForm(request.POST)
+        form2 = AppointmentForm(request.POST)
+        if form1.is_valid():
+            iin = form1.cleaned_data['iin']
+            name = form1.cleaned_data['name']
+            surname = form1.cleaned_data['surname']
+            email = form1.cleaned_data['email']
+            contact_number = form1.cleaned_data['contact_number']
+            Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
+            if form2.is_valid():
+                patient_iin = form1.cleaned_data['iin']
+                doc = form2.cleaned_data['doctor']
+                date = form2.cleaned_data['date']
+                timeslot = form2.cleaned_data['timeslot']
+                Appointment.objects.update(doctor=doc, patient_iin=patient_iin, date=date, timeslot=timeslot, status='requested')
+                request.session['name'] = name
+                request.session['surname'] = surname
+                request.session['date'] = date
+                request.session['timeslot'] = timeslot
+                request.session['doctor'] = selected_doctor
+                return redirect('/appointment_confirmation')
+        else:
+            return redirect('/')

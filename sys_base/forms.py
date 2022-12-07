@@ -71,17 +71,12 @@ class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = ("__all__")
-        labels = {'patient_iin':"IIN"}
-    def __init__(self, *args, **kwargs):
-        super(AppointmentForm, self).__init__(*args, **kwargs)
-        #AVAIL_DATES = kwargs.pop('avail_dates', None)
-        AVAIL_DATES = [('2022-10-9', '2022-10-9'),
-        ('2022-10-17', '2022-10-17'),
-        ('2022-10-4', '2022-10-4'),
-        ]
-        self.fields['doctor'].widget = HiddenInput()
+    def __init__(self, dates, *args, **kwargs):
+        if isinstance(dates, list):
+            super(AppointmentForm, self).__init__(*args, **kwargs)
+            AVAIL_DATES = dates
+            self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
         self.fields['patient_iin'].widget = HiddenInput()
-        self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
-        #if AVAIL_DATES:
-            #print(f"AVAIL DATES IN FORM: {AVAIL_DATES}")
-        #    self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
+        self.fields['status'].widget = HiddenInput()
+        self.fields['doctor'].widget = HiddenInput()
+        self.fields["timeslot"].widget = forms.Select()   

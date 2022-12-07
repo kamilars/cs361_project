@@ -7,13 +7,14 @@
 
         <hr class="my-4" />
   
-        <form id="app_req" action="" method="post" autocomplete="off">
+        <form id="app_req" action="" data-timeslots-url="{% url 'ajax_load_timeslots' %}" method="post" autocomplete="off">
           {% csrf_token %}
           {{form2.date|as_crispy_field}}
           {{form2.timeslot|as_crispy_field}}
           {{form2.doctor|as_crispy_field}}
           {{form1.iin|as_crispy_field}}
           {{form2.patient_iin|as_crispy_field}}
+          {{form2.status}}
           {{form1.name|as_crispy_field}}
           {{form1.surname|as_crispy_field}}
           {{form1.email|as_crispy_field}}
@@ -34,5 +35,27 @@
       </div>
     </div>
   </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+  $("#id_date").click(function () {
+    const url = $("#app_req").attr("data-timeslots-url");
+    const date = $(this).val();
+    const doctorId =$("#id_doctor").val();
+
+    $.ajax({
+      url:url,
+      data: {
+        'date': date,
+        'doctorId':doctorId
+      },
+      success: function(data) {
+        $("#id_timeslot").html(data);
+      }
+    })
+  }
+
+  )
+</script>
 
 {% endblock content %}

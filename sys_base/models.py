@@ -151,15 +151,16 @@ class Appointment(models.Model):
         ('17:00 – 17:30', '17:00 – 17:30'),
     )
 
-    '''DATE_LIST=[]
+    DATE_LIST=[]
     for i in range(0,7):
         day = date.today() + timedelta(days=i)
-        DATE_LIST.append((str(day), str(day)))'''
+        DATE_LIST.append((str(day), str(day)))
    
    
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True)
     patient_iin = models.CharField(max_length=60, blank=True)
-    date = models.CharField(max_length=60)
+    date = models.CharField(choices=DATE_LIST, max_length=60)
+    #timeslot = models.CharField(max_length=60)
     timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)
     prescription = models.TextField(blank=True)
     status = models.CharField(blank=True, default='unscheduled', max_length=30)

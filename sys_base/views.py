@@ -102,49 +102,64 @@ def patient_register(request, id=None):
             form.save()
         return redirect('/patient_list')
 
+def load_timeslots(request):
+    date = request.GET.get('date')
+    doctorId = request.GET.get('doctorId')
+    timeslots_entries = Appointment.objects.filter(date=date, doctor=doctorId, status='unscheduled')
+    timeslots = []
+    for timeslot_entry in timeslots_entries:
+            #timeslots.append((timeslot_entry.timeslot, timeslot_entry.timeslot))
+        timeslots.append (timeslot_entry.timeslot)
+    print(f"TIMESLOTS CHOSEN FROM AJAX: {timeslots}")
+    return render(request, 'sys_base/timeslots_dropdown_list_options.html', {'timeslots':timeslots})
+
 def appointment(request, id):
     context={}
 
     doctor = Doctor.objects.get(pk=id)
     selected_doctor=doctor.name+" "+doctor.surname
     context['doctor_name'] = selected_doctor
-    avail_days_row = Appointment.objects.filter(doctor=doctor.pk, status='unscheduled')
-    avail_dates = []
+    avail_days_row = Appointment.objects.filter(doctor=doctor.pk, status='unscheduled').order_by('date')
+    dates_distinct = set()
     for day in avail_days_row:
-        avail_dates.append((day.date, day.date))
-    print(f"AVAILABLE DAYS: {avail_dates}")
-    #context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk})
-    context['form2'] = AppointmentForm(initial={'doctor': doctor.pk})
+        dates_distinct.add(day.date)
+    avail_dates = []
+    for day in dates_distinct:
+        avail_dates.append((day, day))
+    context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk, 'status': 'requested'})   
     context['form1'] = PatientForm()
 
     if request.method == "GET":
-        #avail_days = avail_days_row.date
         return render(request, "sys_base/request_app_form.html", context)
     elif request.method == "POST":
         form1 = PatientForm(request.POST)
-        form2 = AppointmentForm(request.POST)
+        form2 = AppointmentForm(avail_dates, request.POST)
         if form1.is_valid():
             iin = form1.cleaned_data['iin']
             name = form1.cleaned_data['name']
             surname = form1.cleaned_data['surname']
             email = form1.cleaned_data['email']
             contact_number = form1.cleaned_data['contact_number']
+
+            for field in form2:
+                print("Field Error:", field.name, field.errors)
             Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
-            if form2.is_valid():
-                patient_iin = form1.cleaned_data['iin']
-                doc = form2.cleaned_data['doctor']
-                date = form2.cleaned_data['date']
-                timeslot = form2.cleaned_data['timeslot']
-                Appointment.objects.update(doctor=doc, patient_iin=patient_iin, date=date, timeslot=timeslot, status='requested')
-                request.session['name'] = name
-                request.session['surname'] = surname
-                request.session['date'] = date
-                request.session['timeslot'] = timeslot
-                request.session['doctor'] = selected_doctor
-                return redirect('/appointment_confirmation')
-        else:
-            return redirect('/')
             
+            doc = request.POST['doctor']
+            date = request.POST['date']
+            timeslot = request.POST['timeslot']
+            app = Appointment.objects.get(doctor=doc,date=date, timeslot=timeslot)
+            app.patient_iin = request.POST['iin']
+            app.status = 'requested'
+            app.save()
+            request.session['name'] = name
+            request.session['surname'] = surname
+            request.session['date'] = date
+            request.session['timeslot'] = timeslot
+            request.session['doctor'] = selected_doctor
+            return redirect('/appointment_confirmation')
+        else:
+            return redirect('/')            
 
 
 def requested_appointments(request):
