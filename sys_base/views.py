@@ -14,6 +14,7 @@ def errormsg(request):
     return render(request, 'sys_base/errormsg.html')
 
 def index(request):
+    context = {}
     if 'name' in request.session:
         del request.session['name']
     if 'surname' in request.session:
@@ -26,8 +27,13 @@ def index(request):
         del request.session['timeslot']
     #doctors_list = Doctor.objects.order_by('-name')[:5]
     #context = {'doctors': doctors_list}
-    return render(request, 'sys_base/index.html')
+    context = {'doctor_id': 1}
+    return render(request, 'sys_base/index.html', context)
 
+def base(request):
+    context = {}
+    context = {'doctor_id': 1}
+    return render(request, 'sys_base/base.html', context)
 
 def loginpage(request):
     context = {}
@@ -244,6 +250,7 @@ def searchdoctors(request):
     return render(request, 'sys_base/searchdoctors.html', context)
 
 
+
 def doctor_schedulemanager(request, id=None):
     context={}
     TIMESLOT_LIST = [
@@ -287,7 +294,7 @@ def doctor_schedulemanager(request, id=None):
             app = Appointment.objects.create(doctor=doc,date=each[0], timeslot=each[1])
             app.timeslot = each[1]
             app.save()
-
+        return redirect('/')
 
     #print(f"SLOTS: {slots_spl}")
     
