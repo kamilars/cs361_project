@@ -173,6 +173,7 @@ class Appointment(models.Model):
    
    
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
     patient_iin = models.CharField(max_length=60, blank=True)
     date = models.CharField(max_length=60)
     timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)
