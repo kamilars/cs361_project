@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from datetime import datetime, date, timedelta
 # Create your views here.
 
 def errormsg(request):
@@ -115,9 +116,10 @@ def load_timeslots(request):
     print(f"TIMESLOTS CHOSEN FROM AJAX: {timeslots}")
     return render(request, 'sys_base/timeslots_dropdown_list_options.html', {'timeslots':timeslots})
 
+
+
 def appointment(request, id):
     context={}
-
     doctor = Doctor.objects.get(pk=id)
     selected_doctor=doctor.name+" "+doctor.surname
     context['doctor_name'] = selected_doctor
@@ -143,11 +145,9 @@ def appointment(request, id):
             surname = form1.cleaned_data['surname']
             email = form1.cleaned_data['email']
             contact_number = form1.cleaned_data['contact_number']
-
             for field in form2:
                 print("Field Error:", field.name, field.errors)
             Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
-            
             doc = request.POST['doctor']
             date = request.POST['date']
             timeslot = request.POST['timeslot']
@@ -242,3 +242,54 @@ def searchdoctors(request):
             msg = 'error :('
         
     return render(request, 'sys_base/searchdoctors.html', context)
+
+
+def doctor_schedulemanager(request, id=None):
+    context={}
+    TIMESLOT_LIST = [
+        '09:00 – 09:20',
+        '09:30 – 09:50',
+        '10:00 – 10:20',
+        '10:30 – 10:50',
+        '11:00 – 11:30',
+        '11:30 – 11:50',
+        '12:00 – 12:20',
+        '12:30 – 12:50',
+        '14:00 – 14:20',
+        '14:30 – 14:50'
+    ]
+    DATE_LIST=[]
+    DATE_LIST_FORMATTED = []
+    for i in range(0,7):
+        day = date.today() + timedelta(days=i)
+        DATE_LIST.append(str(day))
+        DATE_LIST_FORMATTED.append(day.strftime("%b %d"))
+    context['timeslots'] = TIMESLOT_LIST
+    context['dates'] = DATE_LIST
+    context['dates_f'] = DATE_LIST_FORMATTED
+
+    slots=[]
+    if request.POST:
+        for each in request.POST:
+            slots.append(each)
+
+        del slots[0]
+        del slots[-1]
+
+        slots_spl = []
+
+        for each in slots:
+            slots_spl.append(each.split('_'))
+        
+        doctorId=1
+        for each in slots_spl:
+            doc=Doctor.objects.get(pk=1)
+            app = Appointment.objects.create(doctor=doc,date=each[0], timeslot=each[1])
+            app.timeslot = each[1]
+            app.save()
+
+
+    #print(f"SLOTS: {slots_spl}")
+    
+    return render(request, 'sys_base/doctor_schedulemanager.html', context)
+

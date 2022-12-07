@@ -1,0 +1,49 @@
+{% extends "sys_base/base.html" %} {% block content %}
+
+<style>
+    input.largerCheckbox {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+
+<form id="make_schedule" action="" method="post" autocomplete="off">
+    {% csrf_token %}
+<table class="table table">
+    <thead class="border-bottom font-weight-bold">
+        <tr>
+            <tr>
+                <td></td>
+                {% for date in dates_f %}
+                <td>{{date}}</td>
+                {% endfor %}
+            </tr>
+        </tr>
+    </thead>
+    <tbody>
+        {% for timeslot in timeslots %}
+            <tr>
+                <td class="border-bottom font-weight-bold">{{timeslot}}</td>
+                {% for date in dates %}
+                <td>
+                    <input
+                        type="checkbox"
+                        id="{{date}}_{{timeslot}}"
+                        name="{{date}}_{{timeslot}}"
+                        value="{{date}}_{{timeslot}}" 
+                        class="largerCheckbox"
+                    />
+                </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="row d.flex">
+    <div class="col-md-12">
+        <button type="submit" name="submitschedule" class="btn btn-info btn-block btn-lg">Submit</button>
+    </div>
+</div>
+</form>
+
+{% endblock content %}
