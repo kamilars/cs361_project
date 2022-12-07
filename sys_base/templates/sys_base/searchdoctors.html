@@ -12,7 +12,7 @@
                     $( function() {
                       var availableTags = [
                         {% for doctor in doctors %}
-                            "{{ doctor.surname }}",
+                            "{{ doctor.surname }} {{doctor.name}}",
                         {% endfor %}
                       ];
                       $( "#tags" ).autocomplete({
