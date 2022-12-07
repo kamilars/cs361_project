@@ -46,7 +46,7 @@
                     <div class="card mb-4 box-shadow">
                         {% if obj.photo_doctor %}              
                         <!-- <img class = "card-img-top" src="{{obj.email.avatar.url }}" width="50" height="60" alt="avatar"> -->
-                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}"  alt="defaultimage">
+                        <img class = "card-img-top" src="{{ obj.photo_doctor.url }}" width="50" height="60" alt="notdefaultimage">
                         {% else %}
                         <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}" width="50" height="60" alt="defaultimage">
                         

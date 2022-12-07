@@ -18,12 +18,13 @@ def charfield_is_number_validator(value):
     else:
         raise ValidationError('Input contains unacceptable characters')
 
-def blood_type_validator(input):
-    if input.upper() != 'A+' or 'A-' or 'B+' or 'B-' or 'O+' or 'O-' or 'AB+' or 'AB-':
-        raise ValidationError(
-            _('%(input)s contain unacceptable input'),
-            params={'value':input},
-        )
+#some stuff to store images...
+def user_directory_path(instance, filename):
+	return 'static/imgs/user_{0}/{1}'.format(instance.iin, filename)
+
+class MyModel(models.Model):
+	upload = models.ImageField(upload_to = user_directory_path)
+
 # Create your models here.
 
 class Account(AbstractUser):
@@ -55,7 +56,17 @@ class Patient(models.Model):
     name = models.CharField(max_length = 30)
     surname = models.CharField(max_length = 30)
     middlename = models.CharField(max_length = 30, blank=True, default='')
-    blood_group = models.CharField(max_length = 3, blank=True) #, validators = [blood_type_validator])
+    blood_group = models.CharField(max_length = 3,
+        choices=(
+            ('A+', 'A+'),
+            ('A-', 'A-'),
+            ('B+', 'B+'),
+            ('B-', 'B-'),
+            ('O+', 'O-'),
+            ('AB+', 'AB+'),
+            ('AB-', 'AB-'),
+        )
+    )
     contact_number = models.CharField(
         blank=True,
         max_length = 11, 
@@ -69,7 +80,11 @@ class Patient(models.Model):
     )
     email = models.CharField(blank=True, max_length = 30 ,validators = [validators.EmailValidator])
     address = models.CharField(blank=True, max_length = 30)
-    marital_status = models.CharField(max_length = 30,blank=True)
+    marital_status = models.CharField(max_length = 30, 
+        choices=(
+            ('Married', 'Married'),
+            ('NotMarried', 'Not Married'),
+        ))
     registration_date = models.DateField(auto_now_add = True)
 
     def __str__(self):
@@ -101,7 +116,7 @@ class Doctor(models.Model):
     department_id = models.PositiveIntegerField()
     specialization_details_id = models.CharField(max_length = 30)
     experience = models.PositiveIntegerField(validators = [validators.MaxValueValidator(100)])
-    photo_doctor = models.ImageField(upload_to = 'imgs/', null=True, default = 'null')
+    photo_doctor = models.ImageField(upload_to = user_directory_path, null=True, default = 'null')
     category_doctor = models.CharField(max_length = 10)
     price_of_appointment = models.PositiveIntegerField()
     schedule_details = models.CharField(max_length = 30) 
