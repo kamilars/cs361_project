@@ -11,7 +11,11 @@
 <div class="container p-t-5">
     <div class="col-md-10 offset-md-1 mt-5">
         <div class="jumbotron" style="margin-top:100px">
-            <h2 class="display-8">You have successfully requested your appointment!</h2>
+            <h3 class="display-8">Dear {{request.session.name}} {{request.session.surname}}, you have successfully requested your appointment!</h3>
+            <p>Please remember the information below</p>
+            <hr class="my-4" />
+            <p>Your doctor is <b>{{request.session.doctor}}</b></p>
+            <p>Date and time: <b>{{request.session.date}}, {{request.session.timeslot}}</b></p>
         </div>
     </div>
     <div class="row d.flex m-t-5">

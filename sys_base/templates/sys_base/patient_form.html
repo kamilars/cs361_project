@@ -9,6 +9,7 @@
       <form action="" method="post" autocomplete="off">
         {% csrf_token %}
         {{form.iin|as_crispy_field}}
+        {{form.non_field_errors}}
         {{form.name|as_crispy_field}}
         {{form.surname|as_crispy_field}}
         {{form.middlename|as_crispy_field}}

@@ -27,11 +27,11 @@
                 <td>{{patient.name}}</td>
                 <td>{{patient.surname}}</td>
                 <td>
-                    <a href="{% url 'patient_update' patient.iin %}" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
+                    <a href="{% url 'patient_update' patient.id %}" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
                         <i class="far fa-edit fa-lg"></i>
                         edit
                     </a>
-                    <form action="{% url 'patient_delete' patient.iin %}" method="post" class="d-inline"> <!-- url 'patient_delete' pateint.iin -->
+                    <form action="{% url 'patient_delete' patient.id %}" method="post" class="d-inline"> <!-- url 'patient_delete' pateint.iin -->
                         {% csrf_token %}
                         <button type="submit" class="btn text-danger">
                             <i class="far fa-trash-alt fa-lg "></i> Delete

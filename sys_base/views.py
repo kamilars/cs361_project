@@ -13,6 +13,16 @@ def errormsg(request):
     return render(request, 'sys_base/errormsg.html')
 
 def index(request):
+    if 'name' in request.session:
+        del request.session['name']
+    if 'surname' in request.session:
+        del request.session['surname']
+    if 'doctor' in request.session:
+        del request.session['doctor']
+    if 'date' in request.session:
+        del request.session['date']
+    if 'timeslot' in request.session:
+        del request.session['timeslot']
     #doctors_list = Doctor.objects.order_by('-name')[:5]
     #context = {'doctors': doctors_list}
     return render(request, 'sys_base/index.html')
@@ -68,25 +78,25 @@ def patient_list(request):
     return render(request, "sys_base/patient_list.html", context)
 
 @login_required(login_url='login')
-def patient_delete(request, iin):
-    patient = Patient.objects.get(pk=iin)
+def patient_delete(request, id):
+    patient = Patient.objects.get(pk=id)
     patient.delete()
     return redirect('/patient_list')
 
 @login_required(login_url='login')
-def patient_register(request, iin=None):
+def patient_register(request, id=None):
     if request.method == "GET":
-        if iin==None:
+        if id==None:
             form = PatientForm()
         else:
-            patient = Patient.objects.get(pk=iin)
+            patient = Patient.objects.get(pk=id)
             form = PatientForm(instance=patient)
         return render(request, "sys_base/patient_form.html", {'form':form})
     elif request.method == "POST":
-        if iin==None:
+        if id==None:
             form = PatientForm(request.POST)
         else:
-            patient = Patient.objects.get(pk=iin)
+            patient = Patient.objects.get(pk=id)
             form = PatientForm(request.POST, instance=patient)
         if form.is_valid():
             form.save()
@@ -94,17 +104,48 @@ def patient_register(request, iin=None):
 
 def appointment(request, id):
     context={}
+
     doctor = Doctor.objects.get(pk=id)
     selected_doctor=doctor.name+" "+doctor.surname
     context['doctor_name'] = selected_doctor
-    context['form'] = AppointmentForm(initial={'doctor': selected_doctor})
+    avail_days_row = Appointment.objects.filter(doctor=doctor.pk, status='unscheduled')
+    avail_dates = []
+    for day in avail_days_row:
+        avail_dates.append((day.date, day.date))
+    print(f"AVAILABLE DAYS: {avail_dates}")
+    #context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk})
+    context['form2'] = AppointmentForm(initial={'doctor': doctor.pk})
+    context['form1'] = PatientForm()
+
     if request.method == "GET":
+        #avail_days = avail_days_row.date
         return render(request, "sys_base/request_app_form.html", context)
     elif request.method == "POST":
-        form = AppointmentForm(request.POST)
-        if form.is_valid():
-            form.save()
-        return redirect('/appointment_confirmation')
+        form1 = PatientForm(request.POST)
+        form2 = AppointmentForm(request.POST)
+        if form1.is_valid():
+            iin = form1.cleaned_data['iin']
+            name = form1.cleaned_data['name']
+            surname = form1.cleaned_data['surname']
+            email = form1.cleaned_data['email']
+            contact_number = form1.cleaned_data['contact_number']
+            Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
+            if form2.is_valid():
+                patient_iin = form1.cleaned_data['iin']
+                doc = form2.cleaned_data['doctor']
+                date = form2.cleaned_data['date']
+                timeslot = form2.cleaned_data['timeslot']
+                Appointment.objects.update(doctor=doc, patient_iin=patient_iin, date=date, timeslot=timeslot, status='requested')
+                request.session['name'] = name
+                request.session['surname'] = surname
+                request.session['date'] = date
+                request.session['timeslot'] = timeslot
+                request.session['doctor'] = selected_doctor
+                return redirect('/appointment_confirmation')
+        else:
+            return redirect('/')
+            
+
 
 def requested_appointments(request):
     context = {}
@@ -124,8 +165,6 @@ def requested_appointments(request):
     return render(request, "sys_base/requested_appointments.html", context)
 
 def appointment_confirmation(request, id=None):
-    #context={}
-    #context['appointment'] = Appointment.objects.get(pk=id)
     return render(request, "sys_base/appointment_confirmation.html") #, context)
 
 @login_required(login_url='login')

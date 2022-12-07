@@ -1,0 +1,27 @@
+{{form.patient_name|as_crispy_field}}
+          {{form.patient_surname|as_crispy_field}}
+          {{form.patient_contact|as_crispy_field}}
+          {{form.date|as_crispy_field}}
+          {{form.doctor|as_crispy_field}}
+          {{form.timeslot|as_crispy_field}}
+
+
+def appointment(request, id):
+    context={}
+
+    doctor = Doctor.objects.get(pk=id)
+    selected_doctor=doctor.name+" "+doctor.surname
+    context['doctor_name'] = selected_doctor
+    context['form2'] = AppointmentForm(initial={'doctor': doctor.pk})
+    context['form1'] = PatientForm()
+
+    if request.method == "GET":
+        return render(request, "sys_base/request_app_form.html", context)
+    elif request.method == "POST":
+        form1 = PatientForm(request.POST)
+        if form1.is_valid():
+            form1.save()
+        form2 = AppointmentForm(request.POST)
+        if form2.is_valid():
+            form2.save()
+        return redirect('/appointment_confirmation')

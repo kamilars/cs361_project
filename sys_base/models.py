@@ -50,13 +50,14 @@ class Patient(models.Model):
         blank=True,
         null=True,
     )
-    date_of_birth = models.DateField()
-    iin = models.CharField(primary_key=True, max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
+    date_of_birth = models.DateField(blank=True, null=True)
+    iin = models.CharField(unique=True, default='', max_length = 12, validators = [validators.MinLengthValidator(12), charfield_is_number_validator])
     name = models.CharField(max_length = 30)
     surname = models.CharField(max_length = 30)
     middlename = models.CharField(max_length = 30, blank=True, default='')
-    blood_group = models.CharField(max_length = 3) #, validators = [blood_type_validator])
+    blood_group = models.CharField(max_length = 3, blank=True) #, validators = [blood_type_validator])
     contact_number = models.CharField(
+        blank=True,
         max_length = 11, 
         validators = [
             validators.RegexValidator(
@@ -66,9 +67,9 @@ class Patient(models.Model):
             validators.MinLengthValidator(11)
         ]
     )
-    email = models.CharField(max_length = 30 ,validators = [validators.EmailValidator])
-    address = models.CharField(max_length = 30)
-    marital_status = models.CharField(max_length = 30)
+    email = models.CharField(blank=True, max_length = 30 ,validators = [validators.EmailValidator])
+    address = models.CharField(blank=True, max_length = 30)
+    marital_status = models.CharField(max_length = 30,blank=True)
     registration_date = models.DateField(auto_now_add = True)
 
     def __str__(self):
@@ -150,19 +151,18 @@ class Appointment(models.Model):
         ('17:00 – 17:30', '17:00 – 17:30'),
     )
 
-    DATE_LIST=[]
+    '''DATE_LIST=[]
     for i in range(0,7):
         day = date.today() + timedelta(days=i)
-        DATE_LIST.append((str(day), str(day)))
+        DATE_LIST.append((str(day), str(day)))'''
    
    
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, blank=True, null=True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
-    date = models.CharField(choices=DATE_LIST, max_length=60)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True)
+    patient_iin = models.CharField(max_length=60, blank=True)
+    date = models.CharField(max_length=60)
     timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)
-    patient_name = models.CharField(max_length=60)
-    patient_surname = models.CharField(max_length=60)
-    patient_contact = models.CharField(max_length=60)
+    prescription = models.TextField(blank=True)
+    status = models.CharField(blank=True, default='unscheduled', max_length=30)
 
     @property
     def time(self):

@@ -43,9 +43,18 @@ class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
         fields = ('__all__')
+
+        def clean_iin(self, *args, **kwargs):
+            iin = self.cleaned_data.get('iin')
+            print('IIN: ', iin)
+            if len(iin) == 12:
+                return iin
+            else:
+                raise forms.ValidationError({'iin':'IIN length should be 12'})
         def __init__(self, *args, **kwargs):
             super(PatientForm, self).__init__(*args, **kwargs)
             self.fields['middlename'].required = False
+            
 
 class LoginAdminForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -62,6 +71,17 @@ class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = ("__all__")
+        labels = {'patient_iin':"IIN"}
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
+        #AVAIL_DATES = kwargs.pop('avail_dates', None)
+        AVAIL_DATES = [('2022-10-9', '2022-10-9'),
+        ('2022-10-17', '2022-10-17'),
+        ('2022-10-4', '2022-10-4'),
+        ]
         self.fields['doctor'].widget = HiddenInput()
+        self.fields['patient_iin'].widget = HiddenInput()
+        self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
+        #if AVAIL_DATES:
+            #print(f"AVAIL DATES IN FORM: {AVAIL_DATES}")
+        #    self.fields["date"].widget = forms.Select(choices=AVAIL_DATES)
