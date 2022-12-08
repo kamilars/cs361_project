@@ -49,10 +49,10 @@
         <table class="table table-borderless">
             <thead class="border-bottom font-weight-bold">
                 <tr>
-                    <td>Doctor</td>
-                    <td>Patient name</td>
-                    <td>Patient surname</td>
+                    <td>Doctor Name</td>
+                    <td>Doctor Surname</td>
                     <td>Contact</td>
+                    <td>Patient IIN</td>
                     <td>Date</td>
                     <td>Time</td>
                     <td></td>
@@ -63,8 +63,8 @@
                     <tr>
                         <td>{{app.doctor.name}}</td>
                         <td>{{app.doctor.surname}}</td>
-                        <td>{{app.patient.surname}}</td>
                         <td>{{app.doctor.contact_number}}</td>
+                        <td>{{app.patient.iin}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
                         <form action="{% url 'makeprescription' app.id %}" method="post" class="d-inline"> <!-- url 'patient_delete' pateint.iin -->

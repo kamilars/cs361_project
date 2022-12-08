@@ -194,6 +194,26 @@ def makeprescription(request, id):
         app.save()
         return redirect('/requested_appointments')
 
+def patient_app_request(request, id):
+    context = {}
+    doctor = Doctor.objects.get(pk=id)
+    selected_doctor=doctor.name+" "+doctor.surname
+    context['doctor_name'] = selected_doctor
+    avail_days_row = Appointment.objects.filter(doctor=doctor.pk, status='unscheduled').order_by('date')
+    dates_distinct = set()
+    for day in avail_days_row:
+        dates_distinct.add(day.date)
+    avail_dates = []
+    for day in dates_distinct:
+        avail_dates.append((day, day))
+    context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk, 'status': 'requested'}) 
+    if request.method == "GET":
+        return render(request, "sys_base/patient_app_request", context)
+    elif request.method == "POST":
+        form2 = AppointmentForm(avail_dates, request.POST)
+        if form2.is_valid():
+            return redirect('/appointment_confirmation')
+    return render(request, 'sys_base/patient_app_request', context)
 
 def requested_appointments(request):
     context = {}
@@ -218,6 +238,8 @@ def requested_appointments(request):
 
 def appointment_confirmation(request, id=None):
     return render(request, "sys_base/appointment_confirmation.html") #, context)
+
+
 
 @login_required(login_url='login')
 def doctor_register(request, iin=None):
