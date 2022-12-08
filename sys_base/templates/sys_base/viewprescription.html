@@ -8,7 +8,15 @@
 
         <hr class="my-4" />
         {{app.prescription}}
-        {{app.status}}
+        
+
+        <div class="row d.flex m-t-5">
+            <div class="col-md-12">
+                <a href="{% url 'past_appointments' %}" class="btn text-info btn-block btn-lg"> <!--url 'patient_list'-->
+                    Back to list
+                </a>
+            </div>
+        </div>
     </div>
   </div>
 </div>

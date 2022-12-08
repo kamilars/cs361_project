@@ -24,12 +24,12 @@
                 {% for app in appointments %}
                     <tr>
                         <td>{{app.doctor}}</td>
-                        <td>{{app.patient_name}}</td>
-                        <td>{{app.patient_surname}}</td>
-                        <td>{{app.patient_contact}}</td>
+                        <td>{{app.patient.name}}</td>
+                        <td>{{app.patient.surname}}</td>
+                        <td>{{app.patient.contact_number}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
-                        <td><a href="" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
+                        <td><a href="{% url 'app_confirm' app.id %}" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
                             Confirm
                         </a></td>
                     </tr>
@@ -91,11 +91,10 @@
                         <td>{{app.timeslot}}</td>
                         <td>
                             {% if usertype == 'Doctor' %}
-                            <form action="{% url 'makeprescription' app.id %}" method="post" class="d-inline"> <!-- url 'patient_delete' pateint.iin -->
-                                {% csrf_token %}
-                                <button type="submit" class="btn text-info"> Make prescription
-                                </button>
-                            </form>
+                            <a href="{% url 'makeprescription' app.id %}" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
+                                Make prescription
+                            </a>
+                           
                             {% endif %}
                         </td>
                     </tr>
@@ -103,6 +102,9 @@
             </tbody>
         </table>
         {% endif %}
+        <a href="{% url 'index' %}" class="btn text-info btn-block btn-lg"> <!--url 'patient_list'-->
+            Main page
+        </a>
 </div>
 </div>
 </div>

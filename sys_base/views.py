@@ -189,11 +189,19 @@ def makeprescription(request, id):
         context['form'] = PrescriptionForm(instance=app)
         return render(request, "sys_base/makeprescription.html", context)
     else:
-        app.status = 'finished'
-        prescr = app.prescription
-        app.prescription = prescr
-        app.save()
-        return redirect('/requested_appointments')
+        if app.status == 'confirmed':
+            app.status = 'finished'
+            if request.POST:
+                prescr = request.POST['prescription']
+            app.prescription = prescr
+            app.save()
+            return redirect('/requested_appointments')
+        elif app.status == 'finished':
+            if request.POST:
+                prescr = request.POST['prescription']
+            app.prescription = prescr
+            app.save()
+            return redirect('/past_appointments')
 
 def viewprescription(request, id):
     context = {}
@@ -262,9 +270,14 @@ def requested_appointments(request):
 
 def past_appointments(request):
     context = {}
-    context['usertype'] = 'Patient'
-    appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'finished')
-    context['appointments'] = appointments
+    if hasattr(request.user, 'patient'):
+        context['usertype'] = 'Patient'
+        appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'finished')
+        context['appointments'] = appointments
+    elif hasattr(request.user, 'doctor'):
+        context['usertype'] = 'Doctor'
+        appointments = Appointment.objects.filter(doctor__account__username = request.user.username, status = 'finished')
+        context['appointments'] = appointments
     return render(request, "sys_base/past_appointments.html", context)
 
 
