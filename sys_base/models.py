@@ -34,6 +34,7 @@ class AdminStaff(models.Model):
     username = models.CharField(max_length = 30)
     password = models.CharField(max_length = 30)
 
+
 class AppointmentRequest(models.Model):
     requestId = models.AutoField(primary_key=True)
     patient_name = models.CharField(max_length = 50)
@@ -173,6 +174,7 @@ class Appointment(models.Model):
    
    
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
     patient_iin = models.CharField(max_length=60, blank=True)
     date = models.CharField(choices=DATE_LIST, max_length=60)
     timeslot = models.CharField(choices=TIMESLOT_LIST, max_length=60)

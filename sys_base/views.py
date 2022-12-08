@@ -137,7 +137,11 @@ def appointment(request, id):
     for day in dates_distinct:
         avail_dates.append((day, day))
     context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk, 'status': 'requested'})   
-    context['form1'] = PatientForm()
+    if request.user.is_authenticated and request.user.patient:
+        context['form1'] = PatientForm(initial={'iin':request.user.patient.iin, 'name' : request.user.patient.name,
+        'surname' : request.user.patient.surname, 'email' : request.user.patient.email, 'contact_number' : request.user.patient.contact_number})
+    else:
+        context['form1'] = PatientForm()
 
     if request.method == "GET":
         return render(request, "sys_base/request_app_form.html", context)

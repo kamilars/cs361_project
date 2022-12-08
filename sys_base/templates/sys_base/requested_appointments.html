@@ -55,10 +55,10 @@
             <tbody>
                 {% for app in appointments %}
                     <tr>
-                        <td>{{app.doctor_name}}</td>
-                        <td>{{app.patient_name}}</td>
-                        <td>{{app.patient_surname}}</td>
-                        <td>{{app.patient_contact}}</td>
+                        <td>{{app.doctor.name}}</td>
+                        <td>{{app.doctor.surname}}</td>
+                        <td>{{app.patient.surname}}</td>
+                        <td>{{app.doctor.contact_number}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
                     </tr>

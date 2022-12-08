@@ -6,7 +6,6 @@ from .models import Patient, Doctor, AdminStaff, AppointmentRequest, Specialize,
 # Register your models here.
 
 admin.site.register(Account, UserAdmin)
-
 admin.site.register(Patient)
 admin.site.register(Doctor)
 admin.site.register(AdminStaff)

@@ -25,9 +25,11 @@
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'index' %}">Home </a>
           </li>
+          {% if request.user.is_authenticated and request.user.doctor %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'doctor_schedulemanager' 1 %}">Set schedule </a>
           </li>
+          {% endif %}
         </ul>
       
         <div class="btn-group">
