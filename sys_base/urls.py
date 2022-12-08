@@ -14,7 +14,7 @@ urlpatterns = [
     path('request_appointment/<int:id>', views.appointment, name='request_appointment'),
     path('appointment_confirmation/', views.appointment_confirmation, name='appointment_confirmation'),
     path('requested_appointments/', views.requested_appointments, name='requested_appointments'),
+    path('patient_app_request/<int:id>', views.patient_app_request, name='patient_app_request'),
     path('doctor_schedulemanager/<int:id>', views.doctor_schedulemanager, name='doctor_schedulemanager'),
     path('ajax/load-timeslots', views.load_timeslots, name='ajax_load_timeslots')
-        
 ]

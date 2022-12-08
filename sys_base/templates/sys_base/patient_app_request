@@ -1,0 +1,58 @@
+{% extends "sys_base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container p-t-5">
+    <div class="col-md-10 offset-md-1 mt-5">
+      <div class="jumbotron" style="margin-top:100px">
+        <h3 class="display-8">Appointment to doctor: {{doctor_name}}</h3>
+
+        <hr class="my-4" />
+  
+        <form id="app_req" action="" data-timeslots-url="{% url 'ajax_load_timeslots' %}" method="post" autocomplete="off">
+          {% csrf_token %}
+          {{form2.date|as_crispy_field}}
+          {{form2.timeslot|as_crispy_field}}
+          {{form2.doctor|as_crispy_field}}
+          {{form2.patient_iin|as_crispy_field}}
+          {{form2.status}}
+          <div class="row d.flex">
+              <div class="col-md-12">
+                  <button type="submit" name="submitappreq" class="btn btn-info btn-block btn-lg">Submit</button>
+              </div>
+          </div>
+          <div class="row d.flex m-t-5">
+              <div class="col-md-12">
+                  <a href="{% url 'index' %}" class="btn text-info btn-block btn-lg"> <!--url 'patient_list'-->
+                      Back to the home page
+                  </a>
+              </div>
+          </div>
+      </form>
+      </div>
+    </div>
+  </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+  $("#id_date").click(function () {
+    const url = $("#app_req").attr("data-timeslots-url");
+    const date = $(this).val();
+    const doctorId =$("#id_doctor").val();
+
+    $.ajax({
+      url:url,
+      data: {
+        'date': date,
+        'doctorId':doctorId
+      },
+      success: function(data) {
+        $("#id_timeslot").html(data);
+      }
+    })
+  }
+
+  )
+</script>
+
+{% endblock content %}
