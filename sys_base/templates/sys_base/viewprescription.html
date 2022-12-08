@@ -1,0 +1,16 @@
+{% extends "sys_base/base.html" %}  {% load crispy_forms_tags %} 
+{% block content %}
+
+<div class="container p-t-5">
+    <div class="col-md-10 offset-md-1 mt-5">
+      <div class="jumbotron" style="margin-top:100px">
+        <h3 class="display-8">Prescription to {{app.patient.name}} {{app.patient.surname}}</h3>
+
+        <hr class="my-4" />
+        {{app.prescription}}
+        {{app.status}}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,7 +1,7 @@
 from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm, PrescriptionForm
+from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm, AppointmentForm1, PrescriptionForm
 from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment, Specialize, Account
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -190,9 +190,16 @@ def makeprescription(request, id):
         return render(request, "sys_base/makeprescription.html", context)
     else:
         app.status = 'finished'
-        app.prescription = request.POST['prescription']
+        prescr = app.prescription
+        app.prescription = prescr
         app.save()
         return redirect('/requested_appointments')
+
+def viewprescription(request, id):
+    context = {}
+    app = Appointment.objects.get(pk=id)
+    context['app'] = app
+    return render(request, "sys_base/viewprescription.html", context)        
 
 def patient_app_request(request, id):
     context = {}
@@ -206,14 +213,30 @@ def patient_app_request(request, id):
     avail_dates = []
     for day in dates_distinct:
         avail_dates.append((day, day))
-    context['form2'] = AppointmentForm(avail_dates, initial={'doctor': doctor.pk, 'status': 'requested'}) 
+    pat_iin = request.user.patient.iin
+    patient = Patient.objects.get(iin=pat_iin)
+    context['form2'] = AppointmentForm1(avail_dates, initial={'doctor': doctor.pk, 'status': 'requested', 'patient':patient.id, 'patient_iin':patient.iin}) 
     if request.method == "GET":
-        return render(request, "sys_base/patient_app_request", context)
+        return render(request, "sys_base/patient_app_request.html", context)
     elif request.method == "POST":
-        form2 = AppointmentForm(avail_dates, request.POST)
-        if form2.is_valid():
-            return redirect('/appointment_confirmation')
-    return render(request, 'sys_base/patient_app_request', context)
+        form2 = AppointmentForm1(avail_dates, request.POST)
+        print(f"FORM 2 FOR PATIENT REQUEST {form2}")
+        print(request.POST)
+        date = request.POST['date']
+        timeslot = request.POST['timeslot']
+        appointment = Appointment.objects.get(doctor=request.POST['doctor'], date=request.POST['date'], timeslot = request.POST['timeslot'])
+        appointment.status = 'requested'
+        appointment.patient = patient
+        appointment.patient_iin = request.POST['patient_iin']
+        appointment.save()
+        request.session['name'] = patient.name
+        request.session['surname'] = patient.surname
+        request.session['date'] = date
+        request.session['timeslot'] = timeslot
+        request.session['doctor'] = selected_doctor
+
+        return redirect('/appointment_confirmation')
+    return render(request, 'sys_base/patient_app_request.html', context)
 
 def requested_appointments(request):
     context = {}
@@ -227,7 +250,7 @@ def requested_appointments(request):
         context['appointments'] = appointments
     elif hasattr(request.user, 'patient'):
         context['usertype'] = 'Patient'
-        appointments = Appointment.objects.filter(patient__account__username = request.user.username)
+        appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'requested')
         context['appointments'] = appointments
     else:
         context['usertype'] = 'Admin'
@@ -235,6 +258,15 @@ def requested_appointments(request):
         context['appointments'] = appointments
 
     return render(request, "sys_base/requested_appointments.html", context)
+
+
+def past_appointments(request):
+    context = {}
+    context['usertype'] = 'Patient'
+    appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'finished')
+    context['appointments'] = appointments
+    return render(request, "sys_base/past_appointments.html", context)
+
 
 def appointment_confirmation(request, id=None):
     return render(request, "sys_base/appointment_confirmation.html") #, context)

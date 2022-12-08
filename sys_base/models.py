@@ -188,7 +188,6 @@ class Appointment(models.Model):
 
 
 
-
     
 
 

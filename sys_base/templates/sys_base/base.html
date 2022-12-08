@@ -64,7 +64,10 @@
             {% endif %}
             {% if request.user.patient %}
             <a href="{% url 'requested_appointments' %}" class="dropdown-item" type="button">
-              Appointments History
+              Requested Appointments
+            </a>
+            <a href="{% url 'past_appointments' %}" class="dropdown-item" type="button">
+              Past Appointments
             </a>
             {% endif %}
 
