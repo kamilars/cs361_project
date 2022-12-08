@@ -236,12 +236,16 @@ def searchdoctors(request):
 
     if 'searchbarsubmit' in request.POST:
         q = request.POST.get('searchbardoctors')
+        splitname = q.split(" ")
+        print(f"SPLITTED NAME: {splitname}")
         s = request.POST.get('select_spec')
         try:
             if s != "Select from below":
                 search = Doctor.objects.filter(specialize__spec__icontains=s)
             else:
                 search = Doctor.objects.filter(name = q) | Doctor.objects.filter(surname = q)
+                if len(splitname) == 2:
+                    search = Doctor.objects.filter(name = splitname[1], surname = splitname[0])
             
             paginator = Paginator(search, 3)
             page_number = request.GET.get('page')
