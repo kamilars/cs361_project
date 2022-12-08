@@ -90,3 +90,16 @@ class AppointmentForm(forms.ModelForm):
         self.fields['status'].widget = HiddenInput()
         self.fields['doctor'].widget = HiddenInput()
         self.fields["timeslot"].widget = forms.Select()   
+
+class PrescriptionForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ("__all__")
+    def __init__(self, *args, **kwargs):
+        super(PrescriptionForm, self).__init__(*args, **kwargs)
+        self.fields['patient_iin'].widget = HiddenInput()
+        self.fields['status'].widget = HiddenInput()
+        self.fields['doctor'].widget = HiddenInput() 
+        self.fields['patient'].widget = HiddenInput() 
+        self.fields['date'].widget = HiddenInput() 
+        self.fields['timeslot'].widget = HiddenInput() 

@@ -8,6 +8,7 @@
         {% if usertype == 'admin' %}
 <h1 class="display-8">Requested Appointments</h1>
         <hr class="my-4">
+        
         <table class="table table-borderless">
             <thead class="border-bottom font-weight-bold">
                 <tr>
@@ -23,15 +24,20 @@
             <tbody>
                 {% for app in appointments %}
                     <tr>
+                        <td>{{app.id}}</td>
                         <td>{{app.doctor}}</td>
                         <td>{{app.patient_name}}</td>
                         <td>{{app.patient_surname}}</td>
                         <td>{{app.patient_contact}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
-                        <td><a href="" class="btn text-secondary px=0"> <!-- url 'user_update' user.email -->
-                            Confirm
-                        </a></td>
+                        <td>
+                            <form action="{% url 'app_confirm' app.id %}" method="post" class="d-inline"> <!-- url 'patient_delete' pateint.iin -->
+                                {% csrf_token %}
+                                <button type="submit" class="btn text-info"> Confirm
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -61,6 +67,11 @@
                         <td>{{app.doctor.contact_number}}</td>
                         <td>{{app.date}}</td>
                         <td>{{app.timeslot}}</td>
+                        <form action="{% url 'makeprescription' app.id %}" method="post" class="d-inline"> <!-- url 'patient_delete' pateint.iin -->
+                            {% csrf_token %}
+                            <button type="submit" class="btn text-info"> Make prescription
+                            </button>
+                        </form>
                     </tr>
                 {% endfor %}
             </tbody>

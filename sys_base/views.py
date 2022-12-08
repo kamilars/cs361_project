@@ -1,7 +1,7 @@
 from pydoc import Doc
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm
+from .forms import DoctorForm, LoginAdminForm, PatientForm, AppointmentForm, PrescriptionForm
 from .models import Doctor, AdminStaff, Patient, AppointmentRequest, Appointment, Specialize, Account
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -157,11 +157,12 @@ def appointment(request, id):
             contact_number = form1.cleaned_data['contact_number']
             for field in form2:
                 print("Field Error:", field.name, field.errors)
-            Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
+            pat = Patient.objects.create(iin=iin, name=name, surname=surname, email=email, contact_number=contact_number)
             doc = request.POST['doctor']
             date = request.POST['date']
             timeslot = request.POST['timeslot']
             app = Appointment.objects.get(doctor=doc,date=date, timeslot=timeslot)
+            app.patient = pat
             app.patient_iin = request.POST['iin']
             app.status = 'requested'
             app.save()
@@ -174,16 +175,35 @@ def appointment(request, id):
         else:
             return redirect('/')            
 
+def app_confirm(request, id):
+    app = Appointment.objects.get(pk=id)
+    app.status = 'confirmed'
+    app.save()
+    return redirect('/requested_appointments')
+    
+def makeprescription(request, id):
+    context = {}
+    app = Appointment.objects.get(pk=id)
+    context['patient'] = Patient.objects.get(iin=app.patient_iin)
+    if request.method == "GET":
+        context['form'] = PrescriptionForm(instance=app)
+        return render(request, "sys_base/makeprescription.html", context)
+    else:
+        app.status = 'finished'
+        app.prescription = request.POST['prescription']
+        app.save()
+        return redirect('/requested_appointments')
+
 
 def requested_appointments(request):
     context = {}
     if request.user.is_superuser:
         context['usertype'] = 'admin'
-        appointments = Appointment.objects.all()
+        appointments = Appointment.objects.filter(status='requested')
         context['appointments'] = appointments
     elif hasattr(request.user, 'doctor'):
         context['usertype'] = 'Doctor'
-        appointments = Appointment.objects.filter(doctor__account__username = request.user.username)
+        appointments = Appointment.objects.filter(doctor__account__username = request.user.username, status='confirmed')
         context['appointments'] = appointments
     elif hasattr(request.user, 'patient'):
         context['usertype'] = 'Patient'
