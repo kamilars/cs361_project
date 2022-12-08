@@ -119,3 +119,14 @@ def appointment(request, id):
                 return redirect('/appointment_confirmation')
         else:
             return redirect('/')
+
+
+
+
+{% if obj.photo_doctor %}
+                        <img class = "card-img-top" src="{{ obj.photo_doctor.url }}" alt="notdefaultimage">
+                        {% endif %}
+
+                        {% if not obj.photo_doctor  %}         
+                        <img class = "card-img-top" src="{% static 'sys_base/imgs/default.jpg' %}" alt="defaultimage">     
+                        {% endif %}

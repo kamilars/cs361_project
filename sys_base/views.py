@@ -250,15 +250,15 @@ def requested_appointments(request):
     context = {}
     if request.user.is_superuser:
         context['usertype'] = 'admin'
-        appointments = Appointment.objects.filter(status='requested')
+        appointments = Appointment.objects.filter(status='requested').order_by('date', 'timeslot')
         context['appointments'] = appointments
     elif hasattr(request.user, 'doctor'):
         context['usertype'] = 'Doctor'
-        appointments = Appointment.objects.filter(doctor__account__username = request.user.username, status='confirmed')
+        appointments = Appointment.objects.filter(doctor__account__username = request.user.username, status='confirmed').order_by('date', 'timeslot')
         context['appointments'] = appointments
     elif hasattr(request.user, 'patient'):
         context['usertype'] = 'Patient'
-        appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'requested')
+        appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'requested').order_by('date', 'timeslot')
         context['appointments'] = appointments
     else:
         context['usertype'] = 'Admin'
@@ -272,11 +272,11 @@ def past_appointments(request):
     context = {}
     if hasattr(request.user, 'patient'):
         context['usertype'] = 'Patient'
-        appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'finished')
+        appointments = Appointment.objects.filter(patient__account__username = request.user.username, status = 'finished').order_by('-date', 'timeslot')
         context['appointments'] = appointments
     elif hasattr(request.user, 'doctor'):
         context['usertype'] = 'Doctor'
-        appointments = Appointment.objects.filter(doctor__account__username = request.user.username, status = 'finished')
+        appointments = Appointment.objects.filter(doctor__account__username = request.user.username, status = 'finished').order_by('-date', 'timeslot')
         context['appointments'] = appointments
     return render(request, "sys_base/past_appointments.html", context)
 
@@ -319,6 +319,46 @@ def searchdoctors(request):
 
     doctors = Doctor.objects.all()
     context["doctors"] = doctors
+
+    specilizations = set()
+    for doctor in doctors:
+        specilizations.add(doctor.specialization_details_id)
+
+    context["specializations"] = specilizations
+    
+
+    if 'searchbarsubmit' in request.POST:
+        q = request.POST.get('searchbardoctors')
+        splitname = q.split(" ")
+        s = request.POST.get('select_spec')
+
+        try:
+            if s != "Select from below":
+                search = Doctor.objects.filter(specialization_details_id=s)
+            else:
+                search = Doctor.objects.filter(name = q) | Doctor.objects.filter(surname = q)
+                if len(splitname) == 2:
+                    search = Doctor.objects.filter(name = splitname[1], surname = splitname[0])
+            
+            paginator = Paginator(search, 3)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+
+            context["page_obj"] = page_obj
+            for ob in page_obj:
+                print(f"OBJECT: {type(ob.photo_doctor)}")
+        except:
+            msg = 'error :('
+        
+    return render(request, 'sys_base/searchdoctors.html', context)
+
+
+'''
+def searchdoctors(request):
+    context = {}
+
+    doctors = Doctor.objects.all()
+    context["doctors"] = doctors
     context["specializations"] = Specialize.objects.order_by().distinct()
 
     if 'searchbarsubmit' in request.POST:
@@ -342,7 +382,7 @@ def searchdoctors(request):
         except:
             msg = 'error :('
         
-    return render(request, 'sys_base/searchdoctors.html', context)
+    return render(request, 'sys_base/searchdoctors.html', context)'''
 
 
 
